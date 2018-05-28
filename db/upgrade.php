@@ -321,5 +321,48 @@ function xmldb_scheduler_upgrade($oldversion=0) {
         // Scheduler savepoint reached.
         upgrade_mod_savepoint(true, 2017040100, 'scheduler');
     }
+
+    if ($oldversion < 2018052800)       {
+
+
+
+        // Add new waiting list table
+        $table = new xmldb_table('scheduler_waiting_list');
+
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('schedulerid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null);
+        $table->add_field('studentid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null);
+        $table->add_field('accepted', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null,0);
+        $table->add_field('declined', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null,0);
+        $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null);
+        $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null);
+
+        // Adding keys to table coursework_person_deadlines.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+
+        // Conditionally launch create table for coursework_person_deadlines.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+
+        // Add waitinglist fields to the scheduler table
+        $table = new xmldb_table('scheduler');
+
+        $field = new xmldb_field('usewaitinglist', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'bookinginstructionsformat');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        $field = new xmldb_field('waitinglistsize', XMLDB_TYPE_INTEGER, 10, null, XMLDB_NOTNULL, null, '0', 'usewaitinglist');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Scheduler savepoint reached.
+        upgrade_mod_savepoint(true, 2018052800, 'scheduler');
+
+    }
+
     return true;
 }

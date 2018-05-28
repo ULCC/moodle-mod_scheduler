@@ -26,6 +26,8 @@
         <FIELD NAME="bookinginstructions" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Text field with instructions for booking"/>
         <FIELD NAME="bookinginstructionsformat" TYPE="int" LENGTH="4" NOTNULL="true" DEFAULT="1" SEQUENCE="false"/>
         <FIELD NAME="usestudentnotes" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="whether students can enter notes at time of booking"/>
+        <FIELD NAME="usewaitinglist" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="whether a waiting list wil be used"/>
+        <FIELD NAME="waitinglistsize" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="size of the waiting list if used"/>
         <FIELD NAME="requireupload" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="whether students must upload files when booking"/>
         <FIELD NAME="uploadmaxfiles" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Maximum number of files that a student can upload with a booking"/>
         <FIELD NAME="uploadmaxsize" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Maximum file size for student uploads"/>
@@ -82,6 +84,20 @@
         <INDEX NAME="slotid" UNIQUE="false" FIELDS="slotid" COMMENT="By slot id"/>
         <INDEX NAME="studentid" UNIQUE="false" FIELDS="studentid" COMMENT="By student id"/>
       </INDEXES>
+    </TABLE>
+    <TABLE NAME="scheduler_waiting_list" COMMENT="scheduler_waiting_list table retrofitted from MySQL">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="9" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="schedulerid" TYPE="int" LENGTH="9" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="studentid" TYPE="int" LENGTH="9" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="accepted" TYPE="int" LENGTH="9" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="declined" TYPE="int" LENGTH="9" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="9" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="9" NOTNULL="false" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="schedwaitid" TYPE="primary" FIELDS="id"/>
+      </KEYS>
     </TABLE>
   </TABLES>
 </XMLDB>
