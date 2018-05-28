@@ -106,6 +106,22 @@ class mod_scheduler_mod_form extends moodleform_mod {
         $mform->addElement('select', 'usenotes', get_string('usenotes', 'scheduler'), $noteoptions);
         $mform->setDefault('usenotes', '1');
 
+        //waiting list code
+        $options['0'] = get_string('no');
+        $options['1'] = get_string('yes');
+        $mform->addElement('select', 'usewaitinglist', get_string('usewaitinglist', 'scheduler'), $options);
+        $mform->setDefault('usewaitinglist', '0');
+
+        $waitinglistoptions = array();
+        $waitinglistoptions['0'] = get_string('unlimited', 'scheduler');
+        for ($i = 1; $i <= 10; $i++) {
+            $waitinglistoptions[(string)$i] = $i;
+        }
+        $mform->addElement('select', 'waitinglistsize', get_string('waitinglistsize', 'scheduler'), $waitinglistoptions);
+        $mform->setDefault('waitinglistsize', 1);
+        $mform->disabledIf('waitinglistsize', 'usewaitinglist', 'eq', '0');
+
+
         // Grade settings.
         $this->standard_grading_coursemodule_elements();
 
