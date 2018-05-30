@@ -47,6 +47,11 @@ class scheduler_instance extends mvc_record_model {
      */
     protected $slots;
 
+    /**
+     * @var mvc_child_list list of waiting_list in this scheduler
+     */
+    protected $waiting_list;
+
     protected function get_table() {
         return 'scheduler';
     }
@@ -55,6 +60,11 @@ class scheduler_instance extends mvc_record_model {
         parent::__construct();
         $this->slots = new mvc_child_list($this, 'scheduler_slots', 'schedulerid',
             new scheduler_slot_factory($this));
+
+        $this->waiting_list =   new mvc_child_list($this, 'scheduler_waiting_list', 'schedulerid',
+            new scheduler_waiting_list_entry_factory($this));
+
+
     }
 
     /**
@@ -1201,5 +1211,73 @@ class scheduler_instance extends mvc_record_model {
             $DB->delete_records_select('scheduler_slots', " id $usql ", $params);
         }
     }
+
+    //** start of waiting list functions */
+
+    /**
+     * Does the scheduler instance use a waiting list
+     *
+     * @return bool true if uses waiting list false if not
+     */
+    public function uses_waiting_list()     {
+        return  (bool)  $this->usewaitinglist;
+    }
+
+    /**
+     * Size of waiting list
+     *
+     * @return  int the size of the waiting list
+     */
+    public function waiting_list_size()     {
+        return  $this->waitinglistsize;
+    }
+
+    /**
+     * returns the current size of the waiting list
+     *
+     * @return int
+     */
+    public function current_waiting_list_size()   {
+
+        global $DB;
+
+        return  $DB->count_records("scheduler_instance",array('schedulerid'=>$this->id));
+    }
+
+
+    /**
+     *  returns whether there are spaces in the waiting list for this scheduler instance
+     *
+     * @return bool true if spaces available false if not
+     */
+    public function waiting_list_spaces_available()   {
+        return ($this->uses_waiting_list() && (empty($this->waitinglistsize) || $this->waitinglistsize < $this->current_waiting_list_size()));
+    }
+
+    /**
+     * Is the student on the waiting list
+     *
+     * @param $studentid
+     * @return bool true if the student is already on the waiting list
+     */
+    public function is_on_waiting_list($studentid)     {
+
+        global  $DB;
+
+        return  $DB->record_exists('scheduler_waiting_list',array('schedulerid'=>$this->id,'studentid'=>$studentid));
+    }
+
+
+    /**
+     * Create a new waiting list entry relating to this scheduler.
+     *
+     * @return scheduler_slot
+     */
+    public function create_waiting_list_entry() {
+        return $this->waiting_list->create_child();
+    }
+
+    /***    end of waiting list functions   ***/
+
 
 }

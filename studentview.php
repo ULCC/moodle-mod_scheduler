@@ -76,6 +76,7 @@ if ($showowngrades) {
 
 // Print group selection menu if given.
 if ($scheduler->is_group_scheduling_enabled()) {
+
     $groupchoice = array();
     if ($scheduler->is_individual_scheduling_enabled()) {
         $groupchoice[0] = get_string('myself', 'scheduler');
@@ -86,6 +87,7 @@ if ($scheduler->is_group_scheduling_enabled()) {
     $select = $output->single_select($actionurl, 'appointgroup', $groupchoice, $appointgroup,
                                      array(-1 => 'choosedots'), 'appointgroupform');
     echo html_writer::div(get_string('appointforgroup', 'scheduler', $select), 'dropdownmenu');
+
 }
 
 // Get past (attended) slots.
@@ -93,6 +95,7 @@ if ($scheduler->is_group_scheduling_enabled()) {
 $pastslots = $scheduler->get_attended_slots_for_student($USER->id);
 
 if (count($pastslots) > 0) {
+
     $slottable = new scheduler_slot_table($scheduler, $showowngrades || $scheduler->is_group_scheduling_enabled());
     foreach ($pastslots as $pastslot) {
         $appointment = $pastslot->get_student_appointment($USER->id);
@@ -119,6 +122,7 @@ if (count($pastslots) > 0) {
 $upcomingslots = $scheduler->get_upcoming_slots_for_student($USER->id);
 
 if (count($upcomingslots) > 0) {
+
     $slottable = new scheduler_slot_table($scheduler, $showowngrades || $scheduler->is_group_scheduling_enabled(), $actionurl);
     foreach ($upcomingslots as $slot) {
         $appointment = $slot->get_student_appointment($USER->id);
@@ -157,14 +161,35 @@ if (!$canseefull && $bookablecnt == 0) {
 
 } else if (count($bookableslots) == 0) {
 
-    // No slots are available at this time.
-    $noslots = get_string('noslotsavailable', 'scheduler');
-    echo html_writer::div($noslots, 'studentbookingmessage');
+    //if waiting lists are turned on and there are still slots in the waiting list available
+    if ($scheduler->uses_waiting_list()  &&  $scheduler->waiting_list_spaces_available()) {
+        //is the current user on the waiting list?
+        if ($scheduler->is_on_waiting_list($USER->id))      {
+
+
+        } else {
+
+            //******************************* put waiting list code here *****************************************//
+            echo $output->heading(get_string('waitinglistspaces', 'scheduler'), 3);
+
+            $waitinglist    =   new     scheduler_waiting_list_info($scheduler->id,$actionurl);
+
+            echo  $output->render($waitinglist);
+
+            //echo html_writer::div(get_string('waitinglistintro', 'scheduler'), 'studentbookingmessage');
+        }
+    }   else    {
+
+            // No slots are available at this time.
+            $noslots = get_string('noslotsavailable', 'scheduler');
+            echo html_writer::div($noslots, 'studentbookingmessage');
+
+    }
+
 
 } else {
     // The student can book (or see) further appointments, and slots are available.
     // Show the booking form.
-
     $booker = new scheduler_slot_booker($scheduler, $USER->id, $actionurl, $bookablecnt);
 
     $pagesize = 25;

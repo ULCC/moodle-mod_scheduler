@@ -678,3 +678,32 @@ class scheduler_appointment_info implements renderable {
     }
 
 }
+
+/**
+ * Information about an waiting list in the scheduler.
+ *
+ * @copyright  2014 Henning Bostelmann and others (see README.txt)
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class scheduler_waiting_list_info implements renderable {
+
+    /**
+     * @var int the id of the scheduler in which the waiting list entry wil be made
+     */
+    public $schedulerid;
+
+    /**
+     * @var moodle_url|null action URL for waitinglist button
+     */
+    public $actionurl;
+
+
+
+
+    public  function    __construct($schedulerid,moodle_url $url)       {
+        $this->schedulerid  =   $schedulerid;
+        $this->actionurl    =   $url;
+    }
+
+
+}

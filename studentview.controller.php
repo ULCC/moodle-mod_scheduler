@@ -284,3 +284,46 @@ if ($action == 'cancelbooking') {
     redirect($returnurl);
 
 }
+
+if ($action == 'joinwaitinglist')   {
+
+    require_sesskey();
+    //require_capability('mod/scheduler:appoint', $context);
+
+    if (!$scheduler->uses_waiting_list())   {
+        throw new moodle_exception('error');
+    }
+
+    if (!$scheduler->waiting_list_spaces_available())   {
+        throw new moodle_exception('error');
+    }
+
+    if  (!$scheduler->is_on_waiting_list($USER->id))  {
+
+        $listspace   =  $scheduler->create_waiting_list_entry();
+        $listspace->schedulerid     =   $scheduler->get_id();
+        $listspace->studentid       =   $USER->id;
+        $listspace->accepted        =   0;
+        $listspace->declined        =   0;
+        $listspace->timecreated     =   $listspace->timemodified    =   time();
+        $listspace->save();
+
+        $msg    =   get_string('addedtowaitinglist','scheduler');
+
+    }   else    {
+        //msg you are already on the waiting list
+        $msg    =   get_string('alreadyonwaitinglist','scheduler');
+    }
+
+    redirect($returnurl,$msg);
+
+}
+
+
+/************************************* Cancel a waiting list entry ******************************************************/
+
+if ($action == 'cancelwaiting')   {
+
+
+
+}

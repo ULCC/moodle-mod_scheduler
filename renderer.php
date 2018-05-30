@@ -1063,4 +1063,23 @@ class mod_scheduler_renderer extends plugin_renderer_base {
         return $o;
     }
 
+    /**
+     * Render a waiting list
+     *
+     * @param scheduler_waiting_list_info $waitinglist
+     * @return string
+     */
+    public function render_scheduler_waiting_list_info(scheduler_waiting_list_info $waitinglist) {
+
+        $bookurl = new moodle_url($waitinglist->actionurl, array('what' => 'joinwaitinglist', 'schedulerid' => $waitinglist->schedulerid));
+        $button = new single_button($bookurl, get_string('joinwaitinglist', 'scheduler'));
+        $buttonhtml = $this->render($button);
+
+        $html   =   html_writer::div(get_string('waitinglistintro', 'scheduler'), 'waitinglistmessage');
+        $html   .=  '<br />'.$buttonhtml;
+
+        return $html;
+
+    }
+
 }
