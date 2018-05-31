@@ -322,8 +322,33 @@ if ($action == 'joinwaitinglist')   {
 
 /************************************* Cancel a waiting list entry ******************************************************/
 
-if ($action == 'cancelwaiting')   {
+if ($action == 'leavewaitinglist')   {
 
+    require_sesskey();
+    // Get the request parameters.
+    $waitinglistid = required_param('waitinglistid', PARAM_INT);
+    //require_capability('mod/scheduler:appoint', $context);
+
+    if (!$scheduler->uses_waiting_list())   {
+        throw new moodle_exception('error');
+    }
+
+    if (!$scheduler->waiting_list_spaces_available())   {
+        throw new moodle_exception('error');
+    }
+
+    if  ($scheduler->is_on_waiting_list($USER->id))  {
+
+        $scheduler->remove_waiting_list_entry($waitinglistid);
+
+        $msg    =   get_string('removedfromwaitinglist','scheduler');
+
+    }   else    {
+        //msg you are already on the waiting list
+        $msg    =   get_string('notonwaitinglist','scheduler');
+    }
+
+    redirect($returnurl,$msg);
 
 
 }

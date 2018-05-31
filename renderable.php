@@ -697,12 +697,27 @@ class scheduler_waiting_list_info implements renderable {
      */
     public $actionurl;
 
+    /**
+     * @var scheduler_instance instance of the scheduler that the waiting list is a child of
+     */
+    public $scheduler;
 
+    /**
+     * @var int id of the waiting list instance in the scheduler
+     */
+    public $waitlistentry;
 
-
-    public  function    __construct($schedulerid,moodle_url $url)       {
+    /**
+     * scheduler_waiting_list_info constructor.
+     * @param int $schedulerid
+     * @param moodle_url $url
+     * @param int $waitinglistentryid
+     */
+    public  function    __construct($schedulerid,moodle_url $url,$studentid=null)       {
         $this->schedulerid  =   $schedulerid;
+        $this->scheduler    =   scheduler_instance::load_by_id($schedulerid);
         $this->actionurl    =   $url;
+        $this->waitlistentry  =   scheduler_waiting_list::load_by_student($studentid,$this->scheduler);
     }
 
 

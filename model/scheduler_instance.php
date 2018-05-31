@@ -1235,13 +1235,13 @@ class scheduler_instance extends mvc_record_model {
     /**
      * returns the current size of the waiting list
      *
-     * @return int
+     * @return int the number of entries in the current waiting list
      */
     public function current_waiting_list_size()   {
 
         global $DB;
 
-        return  $DB->count_records("scheduler_instance",array('schedulerid'=>$this->id));
+        return  $DB->count_records("scheduler_waiting_list",array('schedulerid'=>$this->id,'status'=>scheduler_waiting_list::LISTED));
     }
 
 
@@ -1251,20 +1251,22 @@ class scheduler_instance extends mvc_record_model {
      * @return bool true if spaces available false if not
      */
     public function waiting_list_spaces_available()   {
-        return ($this->uses_waiting_list() && (empty($this->waitinglistsize) || $this->waitinglistsize < $this->current_waiting_list_size()));
+        return ($this->uses_waiting_list() && ($this->waitinglistsize == 0 || $this->waitinglistsize < $this->current_waiting_list_size()));
     }
 
     /**
-     * Is the student on the waiting list
+     * check of the given student (or current user) is n the waiting list
      *
-     * @param $studentid
+     * @param int $studentid the id of the student who will be checked
      * @return bool true if the student is already on the waiting list
      */
-    public function is_on_waiting_list($studentid)     {
+    public function is_on_waiting_list($studentid = NULL)     {
 
-        global  $DB;
+        global  $DB, $USER;
 
-        return  $DB->record_exists('scheduler_waiting_list',array('schedulerid'=>$this->id,'studentid'=>$studentid));
+        $studentid      =   (empty($studentid))     ?   $USER->id   :       $studentid;
+
+        return  $DB->record_exists('scheduler_waiting_list',array('schedulerid'=>$this->id,'studentid'=>$studentid,'status'=>scheduler_waiting_list::LISTED));
     }
 
 
@@ -1275,6 +1277,41 @@ class scheduler_instance extends mvc_record_model {
      */
     public function create_waiting_list_entry() {
         return $this->waiting_list->create_child();
+    }
+
+
+    /**
+     *  Remove the student from the waiting list
+     *
+     * @param   int waitinglistid the database id of the waiting list entry that will be removed
+     *
+     * @return null
+     */
+    public function remove_waiting_list_entry($waitinglistid)     {
+        $waitlistentry      =       scheduler_waiting_list::load_by_id($waitinglistid,$this);
+        $waitlistentry->remove_entry();
+    }
+
+
+    /**
+     * can the given user can book in the scheduler
+     *
+     * @param $studentid
+     * @return bool true if can make a booking false if not
+     */
+    public function can_make_booking($studentid)      {
+
+        global  $DB;
+
+        //does the user have a waiting list entry that is in the pending state
+
+        $params     =   array();
+        $params['studentid']    =   $studentid;
+        $params['schedulerid']  =   $this->get_id();
+        $params['status']       =   scheduler_waiting_list::PENDING;
+
+        return  $DB->record_exists('scheduler_waiting_list',$params);
+
     }
 
     /***    end of waiting list functions   ***/

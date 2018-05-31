@@ -8,6 +8,12 @@
  */
 class scheduler_waiting_list      extends mvc_child_record_model {
 
+    const   LISTED      =   0;
+    const   PENDING    =   1;
+    const   ACCEPTED    =   2;
+    const   DECLINED    =   3;
+    const   REMOVED     =   4;
+
 
     public function __construct(scheduler_instance $scheduler) {
         global $USER;
@@ -21,11 +27,27 @@ class scheduler_waiting_list      extends mvc_child_record_model {
     }
 
     /**
-     * Create a scheduler waiting list from the database.
+     * load scheduler waiting list from the database.
      */
     public static function load_by_id($id, scheduler_instance $scheduler) {
         $scheduler_waiting = new scheduler_waiting_list($scheduler);
         $scheduler_waiting->load($id);
+        return $scheduler_waiting;
+    }
+
+    /**
+     * load a scheduler instance from the database using student id and status
+     */
+    public static function load_by_student($studentid,$scheduler,$status=self::LISTED)      {
+        global  $DB;
+        $entry      =       $DB->get_record('scheduler_waiting_list',array('schedulerid'=>$scheduler->get_id(),'studentid'=>$studentid,'status'=>$status));
+
+        $scheduler_waiting  =   null;
+        if (!empty($entry))   {
+            $scheduler_waiting = new scheduler_waiting_list($scheduler);
+            $scheduler_waiting->load($entry->id);
+        }
+
         return $scheduler_waiting;
     }
 
@@ -52,7 +74,7 @@ class scheduler_waiting_list      extends mvc_child_record_model {
      * @return bool
      */
     public function     slot_accepted()   {
-        return  (bool)  $this->data->accepted;
+        return  ($this->data->status == self::ACCEPTED);
     }
 
     /**
@@ -61,7 +83,24 @@ class scheduler_waiting_list      extends mvc_child_record_model {
      * @return bool
      */
     public function     slot_declined()   {
-        return  (bool)  $this->data->declined;
+        return  ($this->data->status  ==  self::DECLINED);
+    }
+
+    /**
+     * did the user remove themself from the waiting list
+     */
+    public  function    entry_removed()     {
+        return  ($this->data->status    ==  self::REMOVED);
+    }
+
+    /**
+     *  Sets the status of a waiting list entry to removed
+     */
+
+    public function     remove_entry()     {
+        $this->data->timemodified     =   time();
+        $this->data->status     =   self::REMOVED;
+         parent::save();
     }
 
     /**
