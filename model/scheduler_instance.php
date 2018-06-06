@@ -1269,6 +1269,19 @@ class scheduler_instance extends mvc_record_model {
         return  $DB->record_exists('scheduler_waiting_list',array('schedulerid'=>$this->id,'studentid'=>$studentid,'status'=>scheduler_waiting_list::LISTED));
     }
 
+    /**
+     * does the waiting list entry witht he id given belong to the user
+     *
+     * @param $studentid    the student who we will check to see if waiting list entry belongs to
+     * @param $waitinglistid    the id of the waiting list entru we will check
+     * @return bool
+     */
+    public function is_pending_waiting_list_user($studentid,$waitinglistid)      {
+        global  $DB;
+
+        return  $DB->record_exists('scheduler_waiting_list',array('id'=>$waitinglistid,'studentid'=>$studentid,'status'=>scheduler_waiting_list::PENDING));
+    }
+
 
     /**
      * Create a new waiting list entry relating to this scheduler.
@@ -1290,6 +1303,11 @@ class scheduler_instance extends mvc_record_model {
     public function remove_waiting_list_entry($waitinglistid)     {
         $waitlistentry      =       scheduler_waiting_list::load_by_id($waitinglistid,$this);
         $waitlistentry->remove_entry();
+    }
+
+    public function decline_waiting_list_entry($waitinglistid)     {
+        $waitlistentry      =       scheduler_waiting_list::load_by_id($waitinglistid,$this);
+        $waitlistentry->decline_entry();
     }
 
 

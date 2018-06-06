@@ -24,4 +24,8 @@ $messageproviders = array (
     'reminder' => array(
     ),
 
+    // Notification that there is a booking space available for a user on the waiting list.
+    'bookingspace' => array(
+    ),
+
 );

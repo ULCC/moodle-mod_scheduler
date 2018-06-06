@@ -288,7 +288,7 @@ if ($action == 'cancelbooking') {
 if ($action == 'joinwaitinglist')   {
 
     require_sesskey();
-    //require_capability('mod/scheduler:appoint', $context);
+    require_capability('mod/scheduler:appoint', $context);
 
     if (!$scheduler->uses_waiting_list())   {
         throw new moodle_exception('error');
@@ -327,7 +327,7 @@ if ($action == 'leavewaitinglist')   {
     require_sesskey();
     // Get the request parameters.
     $waitinglistid = required_param('waitinglistid', PARAM_INT);
-    //require_capability('mod/scheduler:appoint', $context);
+    require_capability('mod/scheduler:appoint', $context);
 
     if (!$scheduler->uses_waiting_list())   {
         throw new moodle_exception('error');
@@ -342,6 +342,35 @@ if ($action == 'leavewaitinglist')   {
         $scheduler->remove_waiting_list_entry($waitinglistid);
 
         $msg    =   get_string('removedfromwaitinglist','scheduler');
+
+    }   else    {
+        //msg you are already on the waiting list
+        $msg    =   get_string('notonwaitinglist','scheduler');
+    }
+
+    redirect($returnurl,$msg);
+
+
+}
+
+/************************************* Decline a booking slot when moving from a waiting list  ******************************************************/
+
+if ($action == 'declinewaitinglist')   {
+
+    //require_sesskey();
+    // Get the request parameters.
+    $waitinglistid = required_param('waitinglistid', PARAM_INT);
+    require_capability('mod/scheduler:appoint', $context);
+
+    if (!$scheduler->uses_waiting_list())   {
+        throw new moodle_exception('error');
+    }
+
+    if  ($scheduler->is_pending_waiting_list_user($USER->id,$waitinglistid))  {
+
+        $scheduler->decline_waiting_list_entry($waitinglistid);
+
+        $msg    =   get_string('declinedwaitinglist','scheduler');
 
     }   else    {
         //msg you are already on the waiting list
