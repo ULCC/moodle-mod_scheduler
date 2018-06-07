@@ -191,24 +191,25 @@ class scheduler_waiting_list      extends mvc_child_record_model {
 
                 $declineparams        =   array('what'=>'declinewaitinglist','waitinglistid'=>$firstentry->id,'id'=>$coursemoduleid);
 
-                $accepturl  =   new moodle_url('/mod/scheduler/view.php',$acceptparams);
-                $declineurl =   new moodle_url('/mod/scheduler/view.php',$declineparams);
+                $decisionurls       =   new stdClass();
+                $decisionurls->accept  =   new moodle_url('/mod/scheduler/view.php',$acceptparams);
+                $decisionurls->decline=   new moodle_url('/mod/scheduler/view.php',$declineparams);
 
                 $htmlmsg    =       html_writer::tag('p',get_string('bookingslotavailablebody','scheduler'));
 
-                $htmlmsg    .=      html_writer::link($accepturl,get_string('acceptwaitingslot','scheduler'));
+                $htmlmsg    .=      html_writer::link($decisionurls->accept,get_string('acceptwaitingslot','scheduler'));
                 $htmlmsg    .=      html_writer::empty_tag('br');
                 $htmlmsg    .=      html_writer::empty_tag('br');
-                $htmlmsg    .=      html_writer::link($declineurl,get_string('declinewaitingslot','scheduler'));
+                $htmlmsg    .=      html_writer::link($decisionurls->decline,get_string('declinewaitingslot','scheduler'));
 
-                $visitaccepturl  =       get_string('visitaccepturl','scheduler',$accepturl);
-                $visitdeclineurl  =       get_string('visitdeclineurl','scheduler',$declineurl);
+                $visiturl  =       get_string('visiturloptions','scheduler',$decisionurls);
+                //$visitdeclineurl  =       get_string('visitdeclineurl','scheduler',$decisionurls->decline);
 
                 $msgdetails             =   new stdClass();
                 $msgdetails->studentid      =   $firstentry->studentid;
                 $msgdetails->courseid       =   $firstentry->courseid;
                 $msgdetails->subject        =   get_string('bookingslotavailablesubject','scheduler');
-                $msgdetails->fullmsg        =   get_string('bookingslotavailablebody','scheduler').' '.$visitaccepturl.' '.$visitdeclineurl;
+                $msgdetails->fullmsg        =   get_string('bookingslotavailablebody','scheduler').' '.$visiturl;
                 $msgdetails->fullmsghtml        =   $htmlmsg;
                 scheduler_waiting_list::waiting_list_message($msgdetails);
 
