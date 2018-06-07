@@ -358,6 +358,13 @@ function xmldb_scheduler_upgrade($oldversion=0) {
             $dbman->add_field($table, $field);
         }
 
+        $field = new xmldb_field('waitinglistunlock', XMLDB_TYPE_INTEGER, 10, null, XMLDB_NOTNULL, null, '0', 'waitinglistsize');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+
+
         // Scheduler savepoint reached.
         upgrade_mod_savepoint(true, 2018052800, 'scheduler');
 
