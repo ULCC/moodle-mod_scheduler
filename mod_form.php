@@ -122,16 +122,13 @@ class mod_scheduler_mod_form extends moodleform_mod {
         $mform->setDefault('waitinglistsize', 1);
         $mform->disabledIf('waitinglistsize', 'usewaitinglist', 'eq', '0');
 
-        $waitinglistopenoptions = array();
-        $waitinglistopenoptions[0]  =   get_string('dontopen');
-        $waitinglistopenoptions[86400]  =   get_string('onedaybefore');
-        $waitinglistopenoptions[172800]  =   get_string('twodaysbefore');
-        $waitinglistopenoptions[259200]  =   get_string('threedaysbefore');
+        $waitinglistunlockoptions = array();
+        $waitinglistunlockoptions[0]  =   get_string('dontopen');
+        $waitinglistunlockoptions[86400]  =   get_string('onedaybefore');
+        $waitinglistunlockoptions[172800]  =   get_string('twodaysbefore');
+        $waitinglistunlockoptions[259200]  =   get_string('threedaysbefore');
 
-
-
-
-        $mform->addElement('select', 'waitinglistopen', get_string('waitinglistopen', 'scheduler'), $waitinglistopenoptions);
+        $mform->addElement('select', 'waitinglistunlock', get_string('waitinglistunlock', 'scheduler'), $waitinglistunlockoptions);
 
 
         // Grade settings.
