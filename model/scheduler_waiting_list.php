@@ -148,6 +148,45 @@ class scheduler_waiting_list      extends mvc_child_record_model {
     }
 
     /**
+     * Creates the message to be sent to inform a waiting list user that a slot has become available
+     *
+     * @param $coursemoduleid
+     * @param $waitinglistid
+     * @param $studentid
+     * @param $courseid
+     * @return stdClass a object populared with the message information
+     */
+    public static function slot_available_message($coursemoduleid,$waitinglistid,$studentid,$courseid)         {
+
+        $acceptparams        =   array('id'=>$coursemoduleid);
+
+        $declineparams        =   array('what'=>'declinewaitinglist','waitinglistid'=>$waitinglistid,'id'=>$coursemoduleid);
+
+        $decisionurls       =   new stdClass();
+        $decisionurls->accept  =   new moodle_url('/mod/scheduler/view.php',$acceptparams);
+        $decisionurls->decline=   new moodle_url('/mod/scheduler/view.php',$declineparams);
+
+        $htmlmsg    =       html_writer::tag('p',get_string('bookingslotavailablebody','scheduler'));
+
+        $htmlmsg    .=      html_writer::link($decisionurls->accept,get_string('acceptwaitingslot','scheduler'));
+        $htmlmsg    .=      html_writer::empty_tag('br');
+        $htmlmsg    .=      html_writer::empty_tag('br');
+        $htmlmsg    .=      html_writer::link($decisionurls->decline,get_string('declinewaitingslot','scheduler'));
+
+        $visiturl  =       get_string('visiturloptions','scheduler',$decisionurls);
+
+        $message                =   new     stdClass();
+        $message->studentid      =  $studentid;
+        $message->courseid       =  $courseid;
+        $message->subject       =   get_string('bookingslotavailablesubject','scheduler');
+        $message->fullmsg       =   get_string('bookingslotavailablebody','scheduler').' '.$visiturl;
+        $message->fullmsghtml   =   $htmlmsg;
+
+        return  $message;
+
+    }
+
+    /**
      * Called when a booking has been removed, this function informs the next student on the waiting list that
      * that they may make a booking
      *
@@ -186,32 +225,7 @@ class scheduler_waiting_list      extends mvc_child_record_model {
 
                 $DB->update_record('scheduler_waiting_list',$firstentry);
 
-
-                $acceptparams        =   array('id'=>$coursemoduleid);
-
-                $declineparams        =   array('what'=>'declinewaitinglist','waitinglistid'=>$firstentry->id,'id'=>$coursemoduleid);
-
-                $decisionurls       =   new stdClass();
-                $decisionurls->accept  =   new moodle_url('/mod/scheduler/view.php',$acceptparams);
-                $decisionurls->decline=   new moodle_url('/mod/scheduler/view.php',$declineparams);
-
-                $htmlmsg    =       html_writer::tag('p',get_string('bookingslotavailablebody','scheduler'));
-
-                $htmlmsg    .=      html_writer::link($decisionurls->accept,get_string('acceptwaitingslot','scheduler'));
-                $htmlmsg    .=      html_writer::empty_tag('br');
-                $htmlmsg    .=      html_writer::empty_tag('br');
-                $htmlmsg    .=      html_writer::link($decisionurls->decline,get_string('declinewaitingslot','scheduler'));
-
-                $visiturl  =       get_string('visiturloptions','scheduler',$decisionurls);
-                //$visitdeclineurl  =       get_string('visitdeclineurl','scheduler',$decisionurls->decline);
-
-                $msgdetails             =   new stdClass();
-                $msgdetails->studentid      =   $firstentry->studentid;
-                $msgdetails->courseid       =   $firstentry->courseid;
-                $msgdetails->subject        =   get_string('bookingslotavailablesubject','scheduler');
-                $msgdetails->fullmsg        =   get_string('bookingslotavailablebody','scheduler').' '.$visiturl;
-                $msgdetails->fullmsghtml        =   $htmlmsg;
-                scheduler_waiting_list::waiting_list_message($msgdetails);
+                scheduler_waiting_list::waiting_list_message(scheduler_waiting_list::slot_available_message($coursemoduleid,$firstentry->id,$userid,$firstentry->courseid));
 
             }
 
@@ -275,6 +289,7 @@ class scheduler_waiting_list      extends mvc_child_record_model {
 
         global      $DB,$USER;
 
+        var_dump($msgdetails);
 
         $student    =   $DB->get_record('user',array('id'=>$msgdetails->studentid));
         $sender     =   (!empty($msgdetails->teacherid))    ?   $DB->get_record('user',array('id'=>$msgdetails->teacherid)) : $USER;
@@ -294,6 +309,62 @@ class scheduler_waiting_list      extends mvc_child_record_model {
         $message->courseid = $msgdetails->courseid;
 
         $messageid = message_send($message);
+
+    }
+
+
+    /**
+     * Returns all students on the waiting list with status listed
+     *
+     * @return array
+     */
+    public static function get_students_with_listed($schedulerid)     {
+
+        global      $DB;
+
+        $sql        =       "SELECT     w.*, u.firstname, u.lastname
+                             FROM       {scheduler_waiting_list}    w,
+                                        {user}    u
+                             WHERE      w.studentid    =   u.id
+                             AND        w.schedulerid  =   :schedulerid
+                             AND        w.status       =   :status
+                             AND        w.declined     =   :declined";
+
+        return      $DB->get_records_sql($sql,array('schedulerid'=>$schedulerid,'status'=>0,'declined'=>0));
+    }
+
+    /**
+     * Sends emails to users on a waiting list once the time for scheduler unlock has been reached
+     *
+     * @param $scheduler a scheduler db record
+     */
+    public static   function    send_unlock_messages($scheduler)      {
+
+        global  $DB;
+
+        $module         =   $DB->get_record('modules',array('name'=>'scheduler'));
+
+        $coursemodule   =   $DB->get_record('course_modules',array('course'=>$scheduler->course,'module'=>$module->id,'instance'=>$scheduler->id));
+
+        $waitingliststudents   =   scheduler_waiting_list::get_students_with_listed($scheduler->id);
+
+        foreach($waitingliststudents   as  $ws) {
+            //$waitinglist  =   $DB->get_record('scheduler_waiting_list',array('schedulerid'=>$scheduler->id,'studentid'=>$s->id));
+            //var_dump($coursemodule);
+            //var_dump($waitinglist);
+            scheduler_waiting_list::waiting_list_message(scheduler_waiting_list::slot_available_message($coursemodule->id,$ws->id,$ws->studentid,$scheduler->course));
+
+            $ws->status     =   scheduler_waiting_list::PENDING;
+
+            $DB->update_record('scheduler_waiting_list',$ws);
+
+        }
+
+        $scheduler->waitinglistunlock   =   0;
+
+        $DB->update_record('scheduler',$scheduler);
+
+
 
     }
 

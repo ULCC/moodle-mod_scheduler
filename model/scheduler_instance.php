@@ -1332,6 +1332,32 @@ class scheduler_instance extends mvc_record_model {
 
     }
 
+
+    public  static function find_unlocked_schedulers()       {
+
+        global  $DB;
+
+        $sql    =   "SELECT     *
+                     FROM       {scheduler}
+                     WHERE      waitinglistunlock != 0  
+                     AND        waitinglistunlock   < :time ";
+
+        return      $DB->get_records_sql($sql,array('time'=>time()));
+    }
+
+    public  static function unlocked_schedulers()      {
+
+        $schedulers     =       scheduler_instance::find_unlocked_schedulers();
+
+        foreach ($schedulers    as      $s)     {
+
+            scheduler_waiting_list::send_unlock_messages($s);
+
+        }
+
+
+    }
+
     /***    end of waiting list functions   ***/
 
 

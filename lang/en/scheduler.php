@@ -461,10 +461,11 @@ $string['visiturloptions']     =   'Visit the following url to make a booking: {
  Visit the following url to make a booking:   {$a->decline}';
 $string['visitaccepturl']   =   'Visit the following url to make a booking: {$a}';
 $string['visitdeclineurl']   =   'Visit the following url to remove yourself from the waiting list: {$a}';
-$string['waitinglistopen']   =  'Open the waiting list';
+$string['waitinglistunlock']   =  'Unlock the waiting list:';
 $string['waitinglistintro'] =   'There are no longer any slots available to book however you can join the waiting list and you will be advised should a slot become available';
 $string['waitinglistsize']  =   'Waiting list size';
 $string['waitinglistspaces']    =   'Waiting list';
+$string['waitinglistunlocktask']    =   'Waiting list unlock task';
 
 $string['wednesday'] = 'Wednesday';
 $string['welcomebackstudent'] = 'You can book additional slots by clicking on the corresponding "Book slot" button below.';

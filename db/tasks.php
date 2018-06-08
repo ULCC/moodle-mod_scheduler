@@ -26,5 +26,13 @@ $tasks = array(
                 'day' => '*',
                 'dayofweek' => '*',
                 'month' => '*'
+            ),
+            array(
+                'classname' => 'mod_scheduler\task\waiting_list_unlock',
+                'minute' => '*/5',
+                'hour' => '*',
+                'day' => '*',
+                'dayofweek' => '*',
+                'month' => '*'
             )
 );
