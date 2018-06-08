@@ -349,9 +349,7 @@ class scheduler_waiting_list      extends mvc_child_record_model {
         $waitingliststudents   =   scheduler_waiting_list::get_students_with_listed($scheduler->id);
 
         foreach($waitingliststudents   as  $ws) {
-            //$waitinglist  =   $DB->get_record('scheduler_waiting_list',array('schedulerid'=>$scheduler->id,'studentid'=>$s->id));
-            //var_dump($coursemodule);
-            //var_dump($waitinglist);
+
             scheduler_waiting_list::waiting_list_message(scheduler_waiting_list::slot_available_message($coursemodule->id,$ws->id,$ws->studentid,$scheduler->course));
 
             $ws->status     =   scheduler_waiting_list::PENDING;
@@ -363,8 +361,6 @@ class scheduler_waiting_list      extends mvc_child_record_model {
         $scheduler->waitinglistunlock   =   0;
 
         $DB->update_record('scheduler',$scheduler);
-
-
 
     }
 

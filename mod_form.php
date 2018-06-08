@@ -123,6 +123,7 @@ class mod_scheduler_mod_form extends moodleform_mod {
         $mform->disabledIf('waitinglistsize', 'usewaitinglist', 'eq', '0');
 
         $mform->addElement('date_time_selector', 'waitinglistunlock', get_string('waitinglistunlock','scheduler'),array('optional' => true));
+        $mform->disabledIf('waitinglistunlock', 'usewaitinglist', 'eq', '0');
 
         // Grade settings.
         $this->standard_grading_coursemodule_elements();
