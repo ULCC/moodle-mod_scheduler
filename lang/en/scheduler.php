@@ -467,6 +467,11 @@ $string['visiturloptions']     =   'Visit the following url to make a booking: {
 $string['visitaccepturl']   =   'Visit the following url to make a booking: {$a}';
 $string['visitdeclineurl']   =   'Visit the following url to remove yourself from the waiting list: {$a}';
 $string['waitinglist']       =      'Waiting List';
+$string['waitinglistpageintro']     =   '<p>Below is the current waiting list for the current scheduler. </p>
+<ul><li>Listed: The student is on the waiting list.</li>
+    <li>Pending: The student has been sent an offer to book a slot.</li>
+    <li>Accepted: The student was on the waiting list and has been sent a slot offer that they accepted</li>
+    <li>Declined: The student was on the waiting list and has been sent a slot offer that they declined</li></ul>';
 $string['waitingaccepted']    =   'Accepted';
 $string['waitingdeclined']    =   'Declined';
 

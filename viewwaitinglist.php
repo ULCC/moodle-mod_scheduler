@@ -19,10 +19,12 @@ echo $output->mod_intro($scheduler);
 
 
 echo $output->heading(get_string('waitinglist', 'scheduler'));
-
+echo html_writer::div(get_string('waitinglistpageintro','scheduler'));
 if ($scheduler->uses_waiting_list()) {
 
     $waitinglisttable = new     scheduler_waiting_list_table($scheduler->id, $scheduler->cmid);
+
+
     echo $output->render($waitinglisttable);
 } else  {
 
