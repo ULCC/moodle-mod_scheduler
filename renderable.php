@@ -722,3 +722,57 @@ class scheduler_waiting_list_info implements renderable {
 
 
 }
+
+
+class scheduler_waiting_list_table implements renderable
+{
+    /**
+     * @var int the id of the scheduler in which the waiting list entry wil be made
+     */
+    public $schedulerid;
+
+    /**
+     * @var scheduler_instance instance of the scheduler that the waiting list is a child of
+     */
+    public $scheduler;
+
+    /**
+     * @var array waiting list records
+     */
+    public $waitinglist;
+
+    public  function    __construct($schedulerid,$coursemoduleid)       {
+
+        $this->scheduler    =   scheduler_instance::load_by_id($schedulerid);
+
+        if (!empty($this->scheduler))   {
+
+            $schedulerwaitlist  =   $this->scheduler->get_waiting_list();
+            $schedulerwaitlist->load();
+            $waitinglist   =   $schedulerwaitlist->get_children();
+
+            $this->waitinglist  =   array();
+
+            foreach($waitinglist  as  $swl)       {
+
+                $entrydata  =   $swl->get_data();
+
+                $student    =   $swl->get_student();
+
+                $renderdata                 =   new stdClass();
+                $renderdata->studentname     =   $student->firstname.' '.$student->lastname;
+                $renderdata->studnetid       =   $student->id;
+                $renderdata->waitinglistid   =   $swl->get_id();
+                $renderdata->timestamp       =   $swl->get_date_created();
+                $renderdata->status          =   $swl->get_status();
+                $renderdata->statustext      =   $swl->get_status_text();
+                $renderdata->actionurl       =   ($renderdata->status < scheduler_waiting_list::ACCEPTED) ? new moodle_url('/mod/scheduler/view.php', array('id'=>$coursemoduleid,'what' => 'schedule', 'studentid' => $student->id, 'sesskey' => sesskey())): '';
+
+                $this->waitinglist[]         =   $renderdata;
+
+            }
+
+        }
+    }
+
+}

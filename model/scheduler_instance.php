@@ -50,7 +50,7 @@ class scheduler_instance extends mvc_record_model {
     /**
      * @var mvc_child_list list of waiting_list in this scheduler
      */
-    protected $waiting_list;
+    public $waiting_list;
 
     protected function get_table() {
         return 'scheduler';
@@ -1237,7 +1237,7 @@ class scheduler_instance extends mvc_record_model {
      *
      * @return int the number of entries in the current waiting list
      */
-    public function current_waiting_list_size()   {
+    public function current_waiting_list_size($entrystatus=scheduler_waiting_list::LISTED)   {
 
         global $DB;
 
@@ -1355,6 +1355,12 @@ class scheduler_instance extends mvc_record_model {
 
         }
 
+
+    }
+
+    public  function    get_waiting_list()      {
+
+        return  $this->waiting_list;
 
     }
 

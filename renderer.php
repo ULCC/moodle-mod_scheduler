@@ -349,8 +349,10 @@ class mod_scheduler_renderer extends plugin_renderer_base {
         $level1 = array(
                         $this->teacherview_tab($baseurl, 'myappointments', 'view', 'myappointments'),
                         $this->teacherview_tab($baseurl, 'allappointments', 'view', 'allappointments'),
+                        $this->teacherview_tab($baseurl, 'viewwaitinglist', 'viewwaitinglist'),
                         $this->teacherview_tab($baseurl, 'datelist', 'datelist'),
                         $statstab,
+
                         $this->teacherview_tab($baseurl, 'export', 'export')
         );
 
@@ -1094,6 +1096,45 @@ class mod_scheduler_renderer extends plugin_renderer_base {
         $html   .=  '<br />'.$buttonhtml;
 
         return $html;
+
+    }
+
+
+    public  function    render_scheduler_waiting_list_table(scheduler_waiting_list_table    $waiginglistdata)       {
+
+        $html   =   '';
+
+        if (!empty($waiginglistdata->waitinglist))   {
+
+            $t = new html_table();
+
+            $row = new html_table_row();
+            $cell1 = new html_table_cell(get_string('student', 'scheduler'));
+            $cell2 = new html_table_cell(get_string('status', 'scheduler'));
+            $cell3 = new html_table_cell(get_string('created', 'scheduler'));
+            $cell4 = new html_table_cell('&nbsp;');
+            $row->cells = array($cell1, $cell2,$cell3,$cell4);
+            $t->head    =   array(get_string('student', 'scheduler'));
+            $t->head[] = get_string('status', 'scheduler');
+            $t->head[] = get_string('created', 'scheduler');
+            $t->head[] = '&nbsp;';
+
+            foreach($waiginglistdata->waitinglist    as  $w)     {
+                $row = new html_table_row();
+                $cell1 = new html_table_cell($w->studentname);
+                $cell2 = new html_table_cell($w->statustext);
+                $cell3 = new html_table_cell(date('d-m-Y H:i',$w->timestamp));
+                $cell4 = new html_table_cell(html_writer::link($w->actionurl,get_string('schedule','scheduler')));
+                $row->cells = array($cell1, $cell2,$cell3,$cell4);
+                $t->data[] = $row;
+            }
+
+            $html   = html_writer::table($t);
+
+
+        }
+
+        return  $html;
 
     }
 

@@ -140,11 +140,74 @@ class scheduler_waiting_list      extends mvc_child_record_model {
      */
     public function get_student() {
         global $DB;
-        if ($this->data->teacherid) {
+        if ($this->data->studentid) {
             return $DB->get_record('user', array('id' => $this->data->studentid), '*', MUST_EXIST);
         } else {
             return new stdClass();
         }
+    }
+
+
+    /**
+     * Returns the id of the waiting list
+     *
+     * @return int| bool the id of the waiting list or false
+     */
+    public function get_id()    {
+        return  (!empty($this->data->id))   ? $this->data->id  :   false;
+    }
+
+    /**
+     * Returns the timestamp of time the waiting list entry was created
+     *
+     * @return int| bool the id of the waiting list or false
+     */
+    public function get_date_created()     {
+        return  (isset($this->data->timecreated))   ? $this->data->timecreated  :   false;
+    }
+
+    /**
+     * returns the text of the current entry status
+     */
+    public  function get_status()       {
+        return  (isset($this->data->status))   ? $this->data->status  :   false;
+    }
+
+
+    /**
+     * returns the text of the current entry status
+     */
+    public  function get_status_text()       {
+
+        $status =   '';
+
+        if (isset($this->data->status)) {
+            switch ($this->data->status) {
+
+                case scheduler_waiting_list::LISTED   :
+
+                    $status = get_string('waitinglisted', 'scheduler');
+                    break;
+
+                case scheduler_waiting_list::PENDING   :
+
+                    $status = get_string('waitingpending', 'scheduler');
+                    break;
+
+                case scheduler_waiting_list::ACCEPTED   :
+
+                    $status = get_string('waitingaccepted', 'scheduler');
+                    break;
+
+                case scheduler_waiting_list::DECLINED   :
+
+                    $status = get_string('waitingdeclined', 'scheduler');
+                    break;
+
+            }
+        }
+
+        return  $status;
     }
 
     /**

@@ -61,7 +61,9 @@ if ($isteacher) {
     } else if ($action == 'export') {
         include($CFG->dirroot.'/mod/scheduler/export.php');
     } else if ($action == 'datelist') {
-        include($CFG->dirroot.'/mod/scheduler/datelist.php');
+        include($CFG->dirroot . '/mod/scheduler/datelist.php');
+    } else if ($action == 'viewwaitinglist')    {
+        include($CFG->dirroot . '/mod/scheduler/viewwaitinglist.php');
     } else {
         include($CFG->dirroot.'/mod/scheduler/teacherview.php');
     }
