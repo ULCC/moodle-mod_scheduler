@@ -323,6 +323,7 @@ $string['notifications'] = 'Notifications';
 $string['notonwaitinglist']     =   'You are not currently on the waiting list for this event';
 $string['notseen'] = 'Not seen';
 $string['now'] = 'Now';
+$string['nowaitinglist']    =   'No waiting list';
 $string['occurrences'] = 'Occurrences';
 $string['odsformat'] = 'ODS';
 $string['on'] = 'on';
@@ -470,6 +471,7 @@ $string['waitingaccepted']    =   'Accepted';
 $string['waitingdeclined']    =   'Declined';
 
 $string['waitinglisted']    =   'Listed';
+$string['waitinglistnotenabled']    =   'Waiting list is not enabled in this scheduler';
 $string['waitingpending']    =   'Pending';
 $string['waitinglistunlock']   =  'Unlock the waiting list:';
 $string['waitinglistintro'] =   'There are no longer any slots available to book however you can join the waiting list and you will be advised should a slot become available';

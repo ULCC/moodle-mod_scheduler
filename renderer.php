@@ -1132,6 +1132,10 @@ class mod_scheduler_renderer extends plugin_renderer_base {
             $html   = html_writer::table($t);
 
 
+        } else  {
+
+            $html   =   html_writer::div(get_string('nowaitinglist','scheduler'));
+
         }
 
         return  $html;

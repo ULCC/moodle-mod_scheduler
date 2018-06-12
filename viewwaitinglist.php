@@ -16,11 +16,19 @@ echo $output->teacherview_tabs($scheduler, $taburl, '');
 
 echo $output->mod_intro($scheduler);
 
-$waitinglisttable   =   new     scheduler_waiting_list_table($scheduler->id,$scheduler->cmid);
+
 
 echo $output->heading(get_string('waitinglist', 'scheduler'));
 
-echo $output->render($waitinglisttable);
+if ($scheduler->uses_waiting_list()) {
+
+    $waitinglisttable = new     scheduler_waiting_list_table($scheduler->id, $scheduler->cmid);
+    echo $output->render($waitinglisttable);
+} else  {
+
+    echo html_writer::div(get_string('waitinglistnotenabled','scheduler'));
+
+}
 
 // Finish the page.
 echo $OUTPUT->footer($course);
