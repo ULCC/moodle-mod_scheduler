@@ -90,7 +90,8 @@
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="9" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="schedulerid" TYPE="int" LENGTH="9" NOTNULL="true" SEQUENCE="false"/>
-        <FIELD NAME="studentid" TYPE="int" LENGTH="9" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="studentid" TYPE="int" LENGTH="9" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="groupid" TYPE="int" LENGTH="9" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="status" TYPE="int" LENGTH="9" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="timecreated" TYPE="int" LENGTH="9" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="9" NOTNULL="false" SEQUENCE="false"/>
