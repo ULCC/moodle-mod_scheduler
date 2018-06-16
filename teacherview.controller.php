@@ -67,12 +67,23 @@ function scheduler_action_doaddsession($scheduler, $formdata) {
             if ($data->timestart > $data->timeend) {
                 $data->timeend += DAYSECS;
             }
-            if ($data->hideuntilrel == 0) {
-                $slot->hideuntil = time();
-            } else {
-                $slot->hideuntil = make_timestamp($eventdate['year'], $eventdate['mon'], $eventdate['mday'], 6, 0) -
-                                    $data->hideuntilrel;
+
+            if (!empty($data->hideuntiltype)) {
+                if ($data->hideuntilrel == 0) {
+                    $slot->hideuntil = time();
+                } else {
+                    $slot->hideuntil = make_timestamp($eventdate['year'], $eventdate['mon'], $eventdate['mday'], 6, 0) -
+                        $data->hideuntilrel;
+                }
+            }   else    {
+
+                $slot->hideuntil =  $data->hideuntildate;
+
+
             }
+
+
+
             if ($data->emaildaterel == -1) {
                 $slot->emaildate = 0;
             } else {

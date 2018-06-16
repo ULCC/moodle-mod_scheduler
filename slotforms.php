@@ -548,6 +548,17 @@ class scheduler_addsession_form extends scheduler_slotform_base {
         // Common fields.
         $this->add_base_fields();
 
+        $hideuntiltype      =   array(0=>get_string('dateandtime','scheduler'),1=>get_string('relativetime','scheduler'));
+
+        $mform->addElement('select', 'hideuntiltype', get_string('hideuntiltype', 'scheduler'), $hideuntiltype);
+        $mform->setDefault('hideuntiltype', 0);
+
+        // Display slot from this date.
+        $mform->addElement('date_time_selector', 'hideuntildate', get_string('displayfrom', 'scheduler'));
+        $mform->setDefault('hideuntildate', time());
+
+        $mform->disabledIf('hideuntildate', 'hideuntiltype', 'eq', 1);
+
         // Display slot from date - relative.
         $hideuntilsel = array();
         $hideuntilsel[0] = get_string('now', 'scheduler');
@@ -561,6 +572,8 @@ class scheduler_addsession_form extends scheduler_slotform_base {
         }
         $mform->addElement('select', 'hideuntilrel', get_string('displayfrom', 'scheduler'), $hideuntilsel);
         $mform->setDefault('hideuntilsel', 0);
+
+        $mform->disabledIf('hideuntilrel', 'hideuntiltype', 'eq', 0);
 
         // E-mail reminder from.
         $remindersel = array();
