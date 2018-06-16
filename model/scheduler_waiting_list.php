@@ -248,9 +248,6 @@ class scheduler_waiting_list      extends mvc_child_record_model {
         $msgstrings->decline  =   $tempurl->__toString();
         $msgstrings->schedulername  =    $schedulername;
 
-
-        $visiturl  =       get_string('visiturloptions','scheduler',$decisionurls);
-
         $message                =   new     stdClass();
         $message->studentid      =  $studentid;
         $message->courseid       =  $courseid;
