@@ -214,6 +214,11 @@ class scheduler_waiting_list      extends mvc_child_record_model {
                     $status = get_string('waitingdeclined', 'scheduler');
                     break;
 
+                case scheduler_waiting_list::REMOVED   :
+
+                    $status = get_string('waitingremoved', 'scheduler');
+                    break;
+
             }
         }
 
@@ -229,31 +234,29 @@ class scheduler_waiting_list      extends mvc_child_record_model {
      * @param $courseid
      * @return stdClass a object populared with the message information
      */
-    public static function slot_available_message($coursemoduleid,$waitinglistid,$studentid,$courseid)         {
+    public static function slot_available_message($coursemoduleid,$waitinglistid,$studentid,$courseid,$schedulername)         {
 
         $acceptparams        =   array('id'=>$coursemoduleid);
 
         $declineparams        =   array('what'=>'declinewaitinglist','waitinglistid'=>$waitinglistid,'id'=>$coursemoduleid);
 
-        $decisionurls       =   new stdClass();
-        $decisionurls->accept  =   new moodle_url('/mod/scheduler/view.php',$acceptparams);
-        $decisionurls->decline=   new moodle_url('/mod/scheduler/view.php',$declineparams);
+        $tempurl             =   new moodle_url('/mod/scheduler/view.php',$acceptparams);
 
-        $htmlmsg    =       html_writer::tag('p',get_string('bookingslotavailablebody','scheduler'));
+        $msgstrings       =   new stdClass();
+        $msgstrings->accept   =   $tempurl->__toString();
+        $tempurl             =new moodle_url('/mod/scheduler/view.php',$declineparams);
+        $msgstrings->decline  =   $tempurl->__toString();
+        $msgstrings->schedulername  =    $schedulername;
 
-        $htmlmsg    .=      html_writer::link($decisionurls->accept,get_string('acceptwaitingslot','scheduler'));
-        $htmlmsg    .=      html_writer::empty_tag('br');
-        $htmlmsg    .=      html_writer::empty_tag('br');
-        $htmlmsg    .=      html_writer::link($decisionurls->decline,get_string('declinewaitingslot','scheduler'));
 
         $visiturl  =       get_string('visiturloptions','scheduler',$decisionurls);
 
         $message                =   new     stdClass();
         $message->studentid      =  $studentid;
         $message->courseid       =  $courseid;
-        $message->subject       =   get_string('bookingslotavailablesubject','scheduler');
-        $message->fullmsg       =   get_string('bookingslotavailablebody','scheduler').' '.$visiturl;
-        $message->fullmsghtml   =   $htmlmsg;
+        $message->subject       =   get_string('bookingslotavailablesubject','scheduler',$msgstrings->schedulername);
+        $message->fullmsg       =   get_string('bookingslotavailablebody','scheduler');
+        $message->fullmsghtml   =   get_string('bookingslotavailablebodyhtml','scheduler',$msgstrings);
 
         return  $message;
 
@@ -345,7 +348,7 @@ class scheduler_waiting_list      extends mvc_child_record_model {
 
                     $DB->update_record('scheduler_waiting_list', $entry);
 
-                    scheduler_waiting_list::waiting_list_message(scheduler_waiting_list::slot_available_message($coursemoduleid, $entry->id, $entry->studentid, $entry->courseid));
+                    scheduler_waiting_list::waiting_list_message(scheduler_waiting_list::slot_available_message($coursemoduleid, $entry->id, $entry->studentid, $entry->courseid,$scheduler->get_name()));
                 }
             }
 
@@ -468,7 +471,7 @@ class scheduler_waiting_list      extends mvc_child_record_model {
 
         foreach($waitingliststudents   as  $ws) {
 
-            scheduler_waiting_list::waiting_list_message(scheduler_waiting_list::slot_available_message($coursemodule->id,$ws->id,$ws->studentid,$scheduler->course));
+            scheduler_waiting_list::waiting_list_message(scheduler_waiting_list::slot_available_message($coursemodule->id,$ws->id,$ws->studentid,$scheduler->course,$scheduler->name));
 
             $ws->status     =   scheduler_waiting_list::PENDING;
 

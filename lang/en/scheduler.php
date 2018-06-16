@@ -60,7 +60,6 @@ $string['areaslotnote'] = 'Files in slot notes';
 $string['areateachernote'] = 'Files in confidential notes';
 $string['action'] = 'Action';
 $string['actions'] = 'Actions';
-$string['acceptwaitingslot']    =   'Take me to booking form';
 $string['addappointment'] = 'Add another student';
 $string['addcommands'] = 'Add slots';
 $string['addondays'] = 'Add appointments on';
@@ -104,8 +103,13 @@ $string['bookslot'] = 'Book slot';
 $string['bookaslot'] = 'Book a slot';
 $string['bookingdetails'] = 'Booking details';
 $string['bookwithteacher'] = 'Teacher';
-$string['bookingslotavailablebody']        =   'A booking slot has become available body';
-$string['bookingslotavailablesubject']      =   'A booking slot has become available';
+$string['bookingslotavailablebody']        =   '<p>A booking slot has become available in {$a->schedulername}</p>
+<br><br><a href="{$a->accept}">Click here to make a booking ({$a->accept})</a> 
+ <br><br><a href="{$a->decline}">Click here to remove yourself from the waiting list ({$a->decline})</a>';
+$string['bookingslotavailablebodyhtml']        =   '<p>A booking slot has become available in {$a->schedulername}</p>
+<br><br><a href="{$a->accept}">Click here to make a booking ({$a->accept})</a> 
+ <br><br><a href="{$a->decline}">Click here to remove yourself from the waiting list ({$a->decline})</a>';
+$string['bookingslotavailablesubject']      =   'A booking slot has become available in {$a}';
 
 $string['break'] = 'Break between slots';
 $string['breaknotnegative'] = 'Length of the break must not be negative';
@@ -250,7 +254,11 @@ $string['groupscheduling_desc'] = 'Allow entire groups to be scheduled at once.
 (Apart from the global option, the setting "Booking in groups" must be enabled in the respective scheduler instance.)';
 $string['groupsession'] = 'Group session';
 $string['groupsize'] = 'Group size';
-$string['groupsandwaitinglist'] =   'As groups are enabled in this scheduler you should be aware of the following: <ul><li>booking slot available message will only be sent to a group in the event that a booking slot with the capacity to fit the group is created.';
+$string['groupsandwaitinglist'] =   'As groups are enabled in this scheduler you should be aware of the following: <ul>
+<li>booking slot available message will only be sent to a group in the event that a booking slot with the capacity to fit the group is created.</li>
+<li>slot available messages will only be sent to the group user who joined the waiting list</li>
+<li>only the user who joins the waiting list will be able to make a booking should a slot become available</li>
+</ul>';
 $string['guardtime'] = 'Guard time</li></ul>';
 $string['guestscantdoanything'] = 'Guests can\'t do anything here.';
 $string['htmlformat'] = 'HTML';
@@ -464,10 +472,10 @@ $string['usestudentnotes_help'] = 'If enabled, the booking screen will contain a
 $string['usewaitinglist']   =   'Use waiting list';
 $string['viewwaitinglist'] = 'Waiting List';
 $string['viewbooking'] = 'See details';
-$string['visiturloptions']     =   'Visit the following url to make a booking: {$a->accept}
- Visit the following url to make a booking:   {$a->decline}';
-$string['visitaccepturl']   =   'Visit the following url to make a booking: {$a}';
-$string['visitdeclineurl']   =   'Visit the following url to remove yourself from the waiting list: {$a}';
+$string['visiturloptions']     =   '<br><a href="{$a->accept}">Click here to make a booking ({$a->accept})</a> 
+ <br><br><a href="{$a->decline}">Click here to remove yourself from the waiting list ({$a->decline})</a>';
+$string['visitaccepturl']   =   '<a href="{$a->accept}">Click here to make a booking</a>';
+$string['visitdeclineurl']   =   '<a href="{$a->decline}">Click here to remove yourself from the waiting list</a>';
 $string['waitinglist']       =      'Waiting List';
 $string['waitinglistpageintro']     =   '<p>Below is the current waiting list for the current scheduler. </p>
 <ul><li>Listed: The student is on the waiting list.</li>
@@ -485,7 +493,7 @@ $string['waitinglistintro'] =   'There are no longer any slots available to book
 $string['waitinglistsize']  =   'Waiting list size';
 $string['waitinglistspaces']    =   'Waiting list';
 $string['waitinglistunlocktask']    =   'Waiting list unlock task';
-
+$string['waitingremoved']    =   'Removed';
 $string['wednesday'] = 'Wednesday';
 $string['welcomebackstudent'] = 'You can book additional slots by clicking on the corresponding "Book slot" button below.';
 $string['welcomenewstudent'] = 'The table below shows all available slots for an appointment. Make your choice by clicking on the corresponding "Book slot" button. If you need to make a change later you can revisit this page.';

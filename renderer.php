@@ -1076,7 +1076,6 @@ class mod_scheduler_renderer extends plugin_renderer_base {
         global  $CFG;
 
         $params     = array('schedulerid' => $waitinglist->schedulerid);
-
         if (!$waitinglist->scheduler->is_on_waiting_list()) {
             $params['what'] = 'joinwaitinglist';
             //$params['groupid'] = (!empty($params['groupid'])) ? $waitinglist->groupid : 0;
@@ -1120,7 +1119,7 @@ class mod_scheduler_renderer extends plugin_renderer_base {
     }
 
 
-    public  function    render_scheduler_waiting_list_table(scheduler_waiting_list_table    $waiginglistdata)       {
+    public  function    render_scheduler_waiting_list_table($waiginglistdata)       {
 
         $html   =   '';
 
