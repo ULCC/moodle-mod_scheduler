@@ -147,6 +147,16 @@ class scheduler_waiting_list      extends mvc_child_record_model {
         }
     }
 
+    /**
+     * Return the id of the group linked with this waiting list entry
+     *
+     * @return mixed
+     */
+    public  function    get_group() {
+        global  $DB;
+        return  $this->data->groupid;
+   }
+
 
     /**
      * Returns the id of the waiting list
@@ -275,21 +285,68 @@ class scheduler_waiting_list      extends mvc_child_record_model {
                          WHERE      sw.schedulerid   =   :schedulerid
                          AND        s.id          =   sw.schedulerid
                          AND        status        =   :status
-                         ORDER BY   sw.timecreated DESC ";
+                         ORDER BY   sw.timecreated ASC ";
 
             $waitinglist        =       $DB->get_records_sql($sql,array('schedulerid'=>$slot->schedulerid,'status'=>self::LISTED));
 
             if (!empty($waitinglist))   {
 
+                $scheduler      =   scheduler_instance::load_by_id($slot->schedulerid);
 
-                $firstentry     =       array_pop($waitinglist);
+                //entry will only be set if we find a slot that can accomadate a indidivual or group on thw waiting list
+                $entry  =   false;
 
-                $firstentry->status     =   self::PENDING;
+                //if this is a scheduler with groups enabled then we have to check to make sure that those in the waiting list
+                //are individuals or if they are group make sutre a slot in the waiting list exists with the required capacity
+                if ($scheduler->is_group_scheduling_enabled())   {
 
-                $DB->update_record('scheduler_waiting_list',$firstentry);
+                    //get all of the capacities of slots in this scheduler
+                    $schedulerslotscapacities      =   array();
+                    $slots      =   $scheduler->get_slots();
 
-                scheduler_waiting_list::waiting_list_message(scheduler_waiting_list::slot_available_message($coursemoduleid,$firstentry->id,$userid,$firstentry->courseid));
+                    foreach($slots  as  $s)   {
+                        $schedulerslotscapacities[] = $s->count_remaining_appointments();
+                    }
 
+                    foreach($waitinglist    as  $wl) {
+
+                        if (!empty($wl->groupid))   {
+
+                            $group      =   $DB->get_records('groups',array('id'=>$wl->groupid));
+
+                            //find the group size
+                            $groupmembers = $scheduler->get_available_students($group);
+                            $requiredcapacity = count($groupmembers);
+
+                            //get the available slots
+                           foreach($schedulerslotscapacities  as  $slotremainingcapacity)   {
+
+                                if ($slotremainingcapacity > 0 && $requiredcapacity <= $slotremainingcapacity)   {
+                                    $entry = $wl;
+                                    break 2;
+                                }
+
+                            }
+                        }  else {
+                            $entry = array_pop($waitinglist);
+                            break;
+
+                        }
+
+
+
+                    }
+                } else {
+                    $entry = array_pop($waitinglist);
+                }
+
+                if (!empty($entry)) {
+                    $entry->status = self::PENDING;
+
+                    $DB->update_record('scheduler_waiting_list', $entry);
+
+                    scheduler_waiting_list::waiting_list_message(scheduler_waiting_list::slot_available_message($coursemoduleid, $entry->id, $entry->studentid, $entry->courseid));
+                }
             }
 
 
@@ -351,8 +408,6 @@ class scheduler_waiting_list      extends mvc_child_record_model {
     public static   function waiting_list_message($msgdetails)     {
 
         global      $DB,$USER;
-
-        var_dump($msgdetails);
 
         $student    =   $DB->get_record('user',array('id'=>$msgdetails->studentid));
         $sender     =   (!empty($msgdetails->teacherid))    ?   $DB->get_record('user',array('id'=>$msgdetails->teacherid)) : $USER;

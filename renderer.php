@@ -1073,24 +1073,44 @@ class mod_scheduler_renderer extends plugin_renderer_base {
      */
     public function render_scheduler_waiting_list_info(scheduler_waiting_list_info $waitinglist) {
 
+        global  $CFG;
+
         $params     = array('schedulerid' => $waitinglist->schedulerid);
 
-        if (!$waitinglist->scheduler->is_on_waiting_list())   {
-            $params['what'] =   'joinwaitinglist' ;
-            $buttonmsg      =   get_string('joinwaitinglist', 'scheduler');
-            $intromsg       =   get_string('joinwaitinglistintro', 'scheduler');
+        if (!$waitinglist->scheduler->is_on_waiting_list()) {
+            $params['what'] = 'joinwaitinglist';
+            //$params['groupid'] = (!empty($params['groupid'])) ? $waitinglist->groupid : 0;
+            $buttonmsg = get_string('joinwaitinglist', 'scheduler');
+            $intromsg = get_string('joinwaitinglistintro', 'scheduler');
+
+            if ($waitinglist->scheduler->is_group_scheduling_enabled()) {
+                require_once($CFG->dirroot.'/mod/scheduler/waitinglist_form.php');
+
+                $wlf    =   new waitinglist_form($waitinglist->actionurl,$waitinglist->scheduler);
+
+                $buttonhtml =   $wlf->render();
+
+            } else {
+                $bookurl = new moodle_url($waitinglist->actionurl, $params);
+                $button = new single_button($bookurl, $buttonmsg);
+                $buttonhtml = $this->render($button);
+            }
+
+
         } else {
-            $params['what'] =   'leavewaitinglist';
+            $params['what']     =   'leavewaitinglist';
             $buttonmsg      =   get_string('leavewaitinglist', 'scheduler');
             $intromsg       =   get_string('leavewaitinglistintro', 'scheduler');
             $params['waitinglistid']     =   $waitinglist->waitlistentry->get_id();
+
+
+            $bookurl = new moodle_url($waitinglist->actionurl, $params );
+            $button = new single_button($bookurl, $buttonmsg);
+            $buttonhtml = $this->render($button);
         }
 
 
-        $bookurl = new moodle_url($waitinglist->actionurl, $params );
 
-        $button = new single_button($bookurl, $buttonmsg);
-        $buttonhtml = $this->render($button);
 
         $html   =   html_writer::div($intromsg, 'waitinglistmessage');
         $html   .=  '<br />'.$buttonhtml;

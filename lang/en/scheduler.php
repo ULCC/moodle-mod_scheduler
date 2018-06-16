@@ -250,7 +250,8 @@ $string['groupscheduling_desc'] = 'Allow entire groups to be scheduled at once.
 (Apart from the global option, the setting "Booking in groups" must be enabled in the respective scheduler instance.)';
 $string['groupsession'] = 'Group session';
 $string['groupsize'] = 'Group size';
-$string['guardtime'] = 'Guard time';
+$string['groupsandwaitinglist'] =   'As groups are enabled in this scheduler you should be aware of the following: <ul><li>booking slot available message will only be sent to a group in the event that a booking slot with the capacity to fit the group is created.';
+$string['guardtime'] = 'Guard time</li></ul>';
 $string['guestscantdoanything'] = 'Guests can\'t do anything here.';
 $string['htmlformat'] = 'HTML';
 $string['howtoaddstudents'] = 'For adding students to a global scoped scheduler, use the role setting for the module.<br/>You may also use module role definitions to define the attenders of your students.';
@@ -262,6 +263,7 @@ $string['includeslotsfor'] = 'Include slots for';
 $string['incourse'] = ' in course ';
 $string['joinwaitinglist']  =   'Join waiting list';
 $string['joinwaitinglistintro']  =  'There are no longer any slots available to book however you can join the waiting list and you will be advised should a slot become available';
+$string['joinwaitinglistfor']   =   'Join waiting list for:';
 $string['mixindivgroup'] = 'Mix individual and group bookings';
 $string['mixindivgroup_desc'] = 'Where group scheduling is enabled, allow individual bookings as well.';
 $string['introduction'] = 'Introduction';

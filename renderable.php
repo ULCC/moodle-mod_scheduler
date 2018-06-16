@@ -708,16 +708,23 @@ class scheduler_waiting_list_info implements renderable {
     public $waitlistentry;
 
     /**
+     * @var int the id of the group that will be used in the waiting list if the student will book on behalf of a group
+     */
+    public $groupid;
+
+
+    /**
      * scheduler_waiting_list_info constructor.
      * @param int $schedulerid
      * @param moodle_url $url
      * @param int $waitinglistentryid
      */
-    public  function    __construct($schedulerid,moodle_url $url,$studentid=null)       {
+    public  function    __construct($schedulerid,moodle_url $url,$studentid=null,$groupid=0)       {
         $this->schedulerid  =   $schedulerid;
         $this->scheduler    =   scheduler_instance::load_by_id($schedulerid);
         $this->actionurl    =   $url;
         $this->waitlistentry  =   scheduler_waiting_list::load_by_student($studentid,$this->scheduler);
+        $this->groupid      =   $groupid;
     }
 
 

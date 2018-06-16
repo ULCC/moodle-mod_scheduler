@@ -1241,7 +1241,16 @@ class scheduler_instance extends mvc_record_model {
 
         global $DB;
 
-        return  $DB->count_records("scheduler_waiting_list",array('schedulerid'=>$this->id,'status'=>scheduler_waiting_list::LISTED));
+        $sql    =   "SELECT     *
+                     FROM       {scheduler_waiting_list}
+                     WHERE      schedulerid   =   :schedulerid
+                     AND        (status       =   :listed
+                     OR         status        =   :pending)      
+        ";
+
+        $records    =   $DB->get_records_sql($sql,array('schedulerid'=>$this->id,'listed'=>scheduler_waiting_list::LISTED,'pending'=>scheduler_waiting_list::PENDING));
+
+        return      (!empty($records))  ?   count($records) :   0   ;
     }
 
 
@@ -1251,7 +1260,7 @@ class scheduler_instance extends mvc_record_model {
      * @return bool true if spaces available false if not
      */
     public function waiting_list_spaces_available()   {
-        return ($this->uses_waiting_list() && ($this->waitinglistsize == 0 || $this->waitinglistsize < $this->current_waiting_list_size()));
+        return ($this->uses_waiting_list() && ($this->waitinglistsize == 0 || $this->current_waiting_list_size() < $this->waitinglistsize));
     }
 
     /**
@@ -1328,7 +1337,7 @@ class scheduler_instance extends mvc_record_model {
         $params['schedulerid']  =   $this->get_id();
         $params['status']       =   scheduler_waiting_list::PENDING;
 
-        return  $DB->record_exists('scheduler_waiting_list',$params);
+        return  ($this->uses_waiting_list() && $DB->record_exists('scheduler_waiting_list',$params));
 
     }
 

@@ -290,6 +290,8 @@ if ($action == 'joinwaitinglist')   {
     require_sesskey();
     require_capability('mod/scheduler:appoint', $context);
 
+    $groupid    =   optional_param('appointgroup',0,PARAM_INT);
+
     if (!$scheduler->uses_waiting_list())   {
         throw new moodle_exception('error');
     }
@@ -303,6 +305,7 @@ if ($action == 'joinwaitinglist')   {
         $listspace   =  $scheduler->create_waiting_list_entry();
         $listspace->schedulerid     =   $scheduler->get_id();
         $listspace->studentid       =   $USER->id;
+        $listspace->groupid         =   (!empty($groupid))  ? $groupid  :  0 ;
         $listspace->accepted        =   0;
         $listspace->declined        =   0;
         $listspace->timecreated     =   $listspace->timemodified    =   time();
@@ -333,9 +336,9 @@ if ($action == 'leavewaitinglist')   {
         throw new moodle_exception('error');
     }
 
-    if (!$scheduler->waiting_list_spaces_available())   {
+    /*if (!$scheduler->waiting_list_spaces_available())   {
         throw new moodle_exception('error');
-    }
+    }*/
 
     if  ($scheduler->is_on_waiting_list($USER->id))  {
 

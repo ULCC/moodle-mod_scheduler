@@ -74,8 +74,32 @@ if ($showowngrades) {
     }
 }
 
+$bookablecnt = $scheduler->count_bookable_appointments($USER->id, false);
+$bookableslots = array_values($scheduler->get_slots_available_to_student($USER->id, $canseefull));
+
+//We only want to display the group booking drop down if there are slots available for the user to book (inc if they are on
+//a waiting list and they have been given the opportunity to book). The following code helps to determine if we will
+//display the drop down.
+
+$nofurtherbookings  =   (!$canseefull && $bookablecnt == 0);
+
+//does this scheduler use the waiting list
+$useswaitinglist    =   $scheduler->uses_waiting_list();
+
+//if the scheduler uses waiting lists and is oversubscribed can this user make a booking to a new slot
+$canmakebooking     =   $scheduler->can_make_booking($USER->id);
+
+//if the scheduler uses waiting lists, are there any spaces on the waiting list
+$waitinglisthasspaces   =   $scheduler->waiting_list_spaces_available();
+
+//no slots available or slots available that the user can't book
+$dontdisplaygroups    =   (count($bookableslots) == 0 ||(count($bookableslots) > 0 && $useswaitinglist && !$canmakebooking));
+
+
+
+
 // Print group selection menu if given.
-if ($scheduler->is_group_scheduling_enabled()) {
+if ($scheduler->is_group_scheduling_enabled() && !$nofurtherbookings && !$dontdisplaygroups ) {
 
     $groupchoice = array();
     if ($scheduler->is_individual_scheduling_enabled()) {
@@ -153,12 +177,11 @@ if (count($upcomingslots) > 0) {
     echo $output->render($slottable);
 }
 
-$bookablecnt = $scheduler->count_bookable_appointments($USER->id, false);
-$bookableslots = array_values($scheduler->get_slots_available_to_student($USER->id, $canseefull));
+
 
 if (!$canseefull && $bookablecnt == 0) {
     echo html_writer::div(get_string('canbooknofurtherappointments', 'scheduler'), 'studentbookingmessage');
-    // if there are no bookable slots or if there bookable slots but this user is not able to see them
+    // if there are no bookable slots or if there are bookable slots but this user is not able to see them
 
 } else if (count($bookableslots) == 0 ||(count($bookableslots) > 0 && $scheduler->uses_waiting_list() && !$scheduler->can_make_booking($USER->id))) {
 
