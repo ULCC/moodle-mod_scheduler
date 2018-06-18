@@ -550,7 +550,7 @@ class scheduler_addsession_form extends scheduler_slotform_base {
 
         $hideuntiltype      =   array(0=>get_string('dateandtime','scheduler'),1=>get_string('relativetime','scheduler'));
 
-        $mform->addElement('select', 'hideuntiltype', get_string('hideuntiltype', 'scheduler'), $hideuntiltype);
+        $mform->addElement('select', 'hideuntiltype', get_string('displayfromtype', 'scheduler'), $hideuntiltype);
         $mform->setDefault('hideuntiltype', 0);
 
         // Display slot from this date.
@@ -626,6 +626,8 @@ class scheduler_addsession_form extends scheduler_slotform_base {
 
         // Conflict checks are now being done after submitting the form.
 
+
+        //display date is after date
         return $errors;
     }
 }
