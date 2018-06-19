@@ -1263,6 +1263,11 @@ class scheduler_instance extends mvc_record_model {
         return ($this->uses_waiting_list() && ($this->waitinglistsize == 0 || $this->current_waiting_list_size() < $this->waitinglistsize));
     }
 
+    public function is_waiting_list_empty()     {
+        return empty($this->current_waiting_list_size());
+    }
+
+
     /**
      * check of the given student (or current user) is n the waiting list
      *
