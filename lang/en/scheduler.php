@@ -284,6 +284,7 @@ $string['leavewaitinglistintro']     =   'You are currently in the waiting list 
 $string['lengthbreakdown'] = 'By slot duration';
 $string['limited'] = 'Limited ({$a} left)';
 $string['location'] = 'Location';
+$string['maxbookings']  =   'Booking restrictions';
 $string['markseen'] = 'After you have had an appointment with a student please mark them as "Seen" by clicking the checkbox near to their user picture above.';
 $string['markasseennow'] = 'Mark as seen now';
 $string['maxgrade'] = 'Take the highest grade';

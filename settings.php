@@ -12,7 +12,11 @@ defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
 
+
+
     require_once($CFG->dirroot.'/mod/scheduler/lib.php');
+
+    require_once $CFG->dirroot.'/mod/scheduler/local_adminlib.php';
 
     $settings->add(new admin_setting_configcheckbox('mod_scheduler/allteachersgrading',
                      get_string('allteachersgrading', 'scheduler'),
@@ -43,5 +47,25 @@ if ($ADMIN->fulltree) {
                      get_string('uploadmaxfilesglobal', 'scheduler'),
                      get_string('uploadmaxfilesglobal_desc', 'scheduler'),
                      5, PARAM_INT));
+
+    $bookingoptions        =   array();
+    for($i=0;$i<11;$i++)    {
+        $bookingoptions[$i]    =   $i;
+    }
+
+
+    $periodoptions  =   array();
+    $periodoptions[86400]   =   '1 day';
+    $periodoptions[172800]   =   '2 days';
+    $periodoptions[604800]   =   '1 week';
+    $periodoptions[1209600]   =   '2 weeks';
+
+    $settings->add(new setting_restrictbookings('mod_scheduler/maxbookings',
+        'mod_scheduler/bookingperiod',
+        get_string('maxbookings', 'scheduler'),
+        get_string('maxbookings_desc', 'scheduler'),
+        5, $bookingoptions, $periodoptions));
+
+   //$settings->add(new )
 
 }
