@@ -1143,7 +1143,10 @@ class mod_scheduler_renderer extends plugin_renderer_base {
                 $cell1 = new html_table_cell($w->studentname);
                 $cell2 = new html_table_cell($w->statustext);
                 $cell3 = new html_table_cell(date('d-m-Y H:i',$w->timestamp));
-                $cell4 = new html_table_cell(html_writer::link($w->actionurl,get_string('schedule','scheduler')));
+
+                $linkhtml   =   ($w->status < 2)  ?  html_writer::link($w->actionurl,get_string('schedule','scheduler')) :  '' ;
+
+                $cell4 = new html_table_cell($linkhtml);
                 $row->cells = array($cell1, $cell2,$cell3,$cell4);
                 $t->data[] = $row;
             }
