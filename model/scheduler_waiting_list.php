@@ -252,7 +252,7 @@ class scheduler_waiting_list      extends mvc_child_record_model {
         $message->studentid      =  $studentid;
         $message->courseid       =  $courseid;
         $message->subject       =   get_string('bookingslotavailablesubject','scheduler',$msgstrings->schedulername);
-        $message->fullmsg       =   get_string('bookingslotavailablebody','scheduler');
+        $message->fullmsg       =   get_string('bookingslotavailablebody','scheduler',$msgstrings);
         $message->fullmsghtml   =   get_string('bookingslotavailablebodyhtml','scheduler',$msgstrings);
 
         return  $message;
