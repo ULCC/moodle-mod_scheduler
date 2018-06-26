@@ -12,6 +12,13 @@ class   setting_restrictbookings  extends     admin_setting  {
         $this->bookingoptions   =   $bookingoptions;
         $this->periodoptions    =   $periodoptions;
 
+         $t     =   explode('/', $this->numberofbookingsname);
+         $this->numberofbookingsname_number      =  $t[1];
+            $t     =    explode('/', $this->numberofbookingsname.'_period');
+         $this->numberofbookingsname_period  =  $t[1];
+        $t     =    explode('/', $this->numberofbookingsname.'_enabled');
+        $this->numberofbookingsname_enabled =   $t[1];
+
 
         parent::__construct($numberofbookingsname, $visiblename, $description, $defaultsetting);
 
@@ -22,16 +29,19 @@ class   setting_restrictbookings  extends     admin_setting  {
             return '';
         }
 
-        $result = $this->config_write($this->numberofbookingsname, (int)$data['booking']) && $this->config_write($this->numberofbookingsname.'_period', (int)$data['period'])
-            && $this->config_write($this->numberofbookingsname.'_enabled', (int)$data['enabled']);
+
+
+
+        $result = $this->config_write($this->numberofbookingsname_number, (int)$data['booking']) && $this->config_write($this->numberofbookingsname_period, (int)$data['period'])
+            && $this->config_write($this->numberofbookingsname_enabled, (int)$data['enabled']);
         return ($result ? '' : get_string('errorsetting', 'admin'));
     }
 
     function    get_setting()
     {
-        $result1 = $this->config_read($this->numberofbookingsname);
-        $result2 = $this->config_read($this->numberofbookingsname.'_period');
-        $result3 = $this->config_read($this->numberofbookingsname.'_enabled');
+        $result1 = $this->config_read($this->numberofbookingsname_number);
+        $result2 = $this->config_read($this->numberofbookingsname_period);
+        $result3 = $this->config_read($this->numberofbookingsname_enabled);
         if (is_null($result1) or is_null($result2) or is_null($result3)) {
             return NULL;
         }
@@ -100,7 +110,7 @@ class   setting_restrictbookings  extends     admin_setting  {
 
         $module = array(
             'name' => 'mod_scheduler',
-            'fullpath' => '/mod/scheduler/js/cwr_settings.js',
+            'fullpath' => '/mod/scheduler/js/settings.js',
             'requires' => array(
                 'node'
             ));

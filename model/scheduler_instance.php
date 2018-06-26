@@ -1031,6 +1031,27 @@ class scheduler_instance extends mvc_record_model {
         $booked = $DB->count_records_sql($sql, $params);
         $allowed = $this->maxbookings;
 
+        $maxbookingenabled              =   get_config('mod_scheduler','maxbookings_enabled');
+
+
+    //    if (!empty($allowed) && !empty($maxbookingenabled))   {
+
+            $maxbookingnumber               =   get_config('mod_scheduler','maxbookings');
+            $maxbookingperiod               =   get_config('mod_scheduler','maxbookings_period');
+
+            $period   = time()     -   $maxbookingperiod;
+
+            $sql    =       "SELECT     *
+                             FROM       {scheduler_appointment}
+                             WHERE       studentid  =  :studentid
+                             AND        timecreated >= :period";
+
+
+            $bookingsinperiod    =   $DB->get_records_sql($sql,array('studentid'=>$studentid,'period'=>$period));
+
+            if (count($bookingsinperiod) >= $maxbookingnumber) $allowed =   0;
+//        }
+
         if ($allowed == 0) {
             return -1;
         } else if ($booked >= $allowed) {
