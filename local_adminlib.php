@@ -29,10 +29,11 @@ class   setting_restrictbookings  extends     admin_setting  {
             return '';
         }
 
+        $bookingdata    =       (isset($data['booking']))   ?    (int) $data['booking']    :   0;
 
+        $perioddata    =       (isset($data['period']))   ?    (int) $data['period']    :   0;
 
-
-        $result = $this->config_write($this->numberofbookingsname_number, (int)$data['booking']) && $this->config_write($this->numberofbookingsname_period, (int)$data['period'])
+        $result = $this->config_write($this->numberofbookingsname_number, $bookingdata) && $this->config_write($this->numberofbookingsname_period, $perioddata)
             && $this->config_write($this->numberofbookingsname_enabled, (int)$data['enabled']);
         return ($result ? '' : get_string('errorsetting', 'admin'));
     }

@@ -1032,7 +1032,7 @@ class scheduler_instance extends mvc_record_model {
         $allowed = $this->maxbookings;
 
         $maxbookingenabled              =   get_config('mod_scheduler','maxbookings_enabled');
-
+        $sitemaxreached                 =   false;
 
     //    if (!empty($allowed) && !empty($maxbookingenabled))   {
 
@@ -1049,12 +1049,12 @@ class scheduler_instance extends mvc_record_model {
 
             $bookingsinperiod    =   $DB->get_records_sql($sql,array('studentid'=>$studentid,'period'=>$period));
 
-            if (count($bookingsinperiod) >= $maxbookingnumber) $allowed =   0;
+            if (count($bookingsinperiod) >= $maxbookingnumber) $sitemaxreached =   true;
 //        }
 
-        if ($allowed == 0) {
+        if ($allowed == 0 && empty($sitemaxreached)) {
             return -1;
-        } else if ($booked >= $allowed) {
+        } else if ($booked >= $allowed || empty($sitemaxreached)) {
             return 0;
         } else {
             return $allowed - $booked;
