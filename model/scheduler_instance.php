@@ -1435,7 +1435,7 @@ class scheduler_instance extends mvc_record_model {
 
     }
 
-    /***    end of waiting list functions   ***/
+    /***    end of waiting list functions   **/
 
 
 }

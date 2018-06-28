@@ -186,12 +186,11 @@ if (!$canseefull && $bookablecnt == 0) {
     echo html_writer::div(get_string('canbooknofurtherappointments', 'scheduler'), 'studentbookingmessage');
     // if there are no bookable slots or if there are bookable slots but this user is not able to see them
 
-} else if (count($bookableslots) == 0 ||(count($bookableslots) > 0 && $scheduler->uses_waiting_list() && !$scheduler->can_make_booking($USER->id) && !$waitinglistisempty)) {
+} else if (count($bookableslots) == 0  ||(count($bookableslots) > 0 && $scheduler->uses_waiting_list() && !$scheduler->can_make_booking($USER->id) && !$waitinglistisempty )) {
 
-    //if waiting lists are turned on and there are still slots in the waiting list available
-    if ($scheduler->is_on_waiting_list($USER->id) || $scheduler->uses_waiting_list()  &&  $scheduler->waiting_list_spaces_available()) {
+    //if waiting lists are turned on and there are still slots in the waiting list available and the student doesnt already have a slot booked
+    if ($scheduler->is_on_waiting_list($USER->id) || $scheduler->uses_waiting_list()  &&  $scheduler->waiting_list_spaces_available() && empty($upcomingslots)) {
         //is the current user on the waiting list?
-        //
 
         echo $output->heading(get_string('waitinglistspaces', 'scheduler'), 3);
 

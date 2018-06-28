@@ -53,7 +53,32 @@ function scheduler_book_slot($scheduler, $slotid, $userid, $groupid, $mform, $fo
     if ($bookinglimit == 0) {
         $errormessage = get_string('selectedtoomany', 'scheduler', $bookinglimit);
     } else if ($bookingprohibited) {
-        $errormessage = get_string('bookingrestrictionmsg', 'scheduler', $bookinglimit);
+
+        $restrictionperiod      =   get_config('mod_scheduler', 'maxbookings_period');
+
+        $restrictionperiodtxt          =   '';
+
+        switch  ($restrictionperiod)  {
+
+            case   86400 :
+                $restrictionperiodtxt   =   '1 day';
+                break;
+
+            case  172800  :
+                $restrictionperiodtxt   =   '2 days';
+                break;
+
+            case  604800  :
+                $restrictionperiodtxt   =   '1 week';
+                break;
+
+            case  1209600  :
+                $restrictionperiodtxt   =   '2 weeks';
+                break;
+        }
+
+
+        $errormessage = get_string('bookingrestrictionmsg', 'scheduler', $restrictionperiodtxt);
     } else {
         // Validate our user ids.
         $existingstudents = array();
