@@ -347,7 +347,7 @@ class scheduler_waiting_list      extends mvc_child_record_model {
 
                             }
                         }  else {
-                            $entry = array_pop($waitinglist);
+                            $entry = array_shift($waitinglist);
                             break;
 
                         }
@@ -356,7 +356,7 @@ class scheduler_waiting_list      extends mvc_child_record_model {
 
                     }
                 } else {
-                    $entry = array_pop($waitinglist);
+                    $entry = array_shift($waitinglist);
                 }
 
                 if (!empty($entry)) {
