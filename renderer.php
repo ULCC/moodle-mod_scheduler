@@ -1140,7 +1140,10 @@ class mod_scheduler_renderer extends plugin_renderer_base {
 
             foreach($waiginglistdata->waitinglist    as  $w)     {
                 $row = new html_table_row();
-                $cell1 = new html_table_cell($w->studentname);
+
+                $studentname    =   (!empty($w->group)) ?   get_string('onbehalfof','scheduler',$w) : $w->studentname;
+
+                $cell1 = new html_table_cell($studentname);
                 $cell2 = new html_table_cell($w->statustext);
                 $cell3 = new html_table_cell(date('d-m-Y H:i',$w->timestamp));
 

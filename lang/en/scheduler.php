@@ -340,6 +340,7 @@ $string['nowaitinglist']    =   'No waiting list';
 $string['occurrences'] = 'Occurrences';
 $string['odsformat'] = 'ODS';
 $string['on'] = 'on';
+$string['onbehalfof']     =   '{$a->studentname} on behalf of {$a->group}';
 $string['onedaybefore'] =   'One day before';
 $string['onelineperappointment'] = 'One line per appointment';
 $string['onelineperslot'] = 'One line per slot';

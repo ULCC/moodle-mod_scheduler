@@ -185,6 +185,25 @@ class scheduler_waiting_list      extends mvc_child_record_model {
 
 
     /**
+     * Returns the name of the group associated with the students waiting list entry
+     *
+     * @return string
+     */
+    public  function get_group_name()        {
+        global  $DB;
+
+        $groupname      =   '';
+
+        if (!empty($this->data->groupid))   {
+            $group     =   $DB->get_record('groups',array('id'=>$this->data->groupid));
+            $groupname  =  (!empty($group))    ?   $group->name    :   '';
+        }
+
+        return  $groupname;
+    }
+
+
+    /**
      * returns the text of the current entry status
      */
     public  function get_status_text()       {
