@@ -110,7 +110,7 @@ $string['bookingslotavailablebodyhtml']        =   '<p>A booking slot has become
 <br><br><a href="{$a->accept}">Click here to make a booking ({$a->accept})</a> 
  <br><br><a href="{$a->decline}">Click here to remove yourself from the waiting list ({$a->decline})</a>';
 $string['bookingslotavailablesubject']      =   'A booking slot has become available in {$a}';
-
+$string['bookingrestrictionmsg']            =   'Booking Restricted <p> This booking has been restricted as you have reached the maximum number of bookings allowed in a {$a}}</p>';
 $string['break'] = 'Break between slots';
 $string['breaknotnegative'] = 'Length of the break must not be negative';
 $string['cancelbooking'] = 'Cancel booking';

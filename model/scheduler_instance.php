@@ -1031,34 +1031,70 @@ class scheduler_instance extends mvc_record_model {
         $booked = $DB->count_records_sql($sql, $params);
         $allowed = $this->maxbookings;
 
-        $maxbookingenabled              =   get_config('mod_scheduler','maxbookings_enabled');
-        $sitemaxreached                 =   false;
 
-    //    if (!empty($allowed) && !empty($maxbookingenabled))   {
-
-            $maxbookingnumber               =   get_config('mod_scheduler','maxbookings');
-            $maxbookingperiod               =   get_config('mod_scheduler','maxbookings_period');
-
-            $period   = time()     -   $maxbookingperiod;
-
-            $sql    =       "SELECT     *
-                             FROM       {scheduler_appointment}
-                             WHERE       studentid  =  :studentid
-                             AND        timecreated >= :period";
-
-
-            $bookingsinperiod    =   $DB->get_records_sql($sql,array('studentid'=>$studentid,'period'=>$period));
-
-            if (count($bookingsinperiod) >= $maxbookingnumber) $sitemaxreached =   true;
-//        }
-
-        if ($allowed == 0 && empty($sitemaxreached)) {
+        if ($allowed == 0 ) {
             return -1;
-        } else if ($booked >= $allowed || empty($sitemaxreached)) {
+        } else if ($booked >= $allowed) {
             return 0;
         } else {
             return $allowed - $booked;
         }
+
+    }
+
+    /**
+     * Checks the students booking in the slot to make sure it doesnt violate any of the sites booking restrictions
+     *
+     * @param $studentid
+     * @param $slotid
+     * @param $scheduler
+     * @return bool
+     */
+    public  function    booking_prohibited($studentid,$slotid)      {
+
+        global  $DB;
+
+        $bookingrestrictionsenabled           =   get_config('mod_scheduler','maxbookings_enabled');
+
+        $prohibted  =   false;
+
+        if ($bookingrestrictionsenabled) {
+
+            $slot       =   scheduler_slot::load_by_id($slotid,$this);
+
+
+            //    if (!empty($allowed) && !empty($maxbookingenabled))   {
+
+            $maxbookingnumber = get_config('mod_scheduler', 'maxbookings');
+            $maxbookingperiod = get_config('mod_scheduler', 'maxbookings_period');
+
+            $periodsplit        =   $maxbookingperiod   /2;
+
+            $restrictedstart        =        $slot->starttime   -   $periodsplit;
+            $restrictedend          =        $restrictedstart   +   $maxbookingperiod;
+
+            $sql = "        SELECT   * 
+                            FROM       {scheduler_appointment} sa,
+					                    {scheduler_slots}	ss
+                             WHERE       sa.slotid	=	ss.id
+                             AND       studentid  =  :studentid
+                             AND        ss.starttime >= :restrictedstart
+                             AND        ss.starttime <=  :restrictedend";
+
+
+            $params         =       array();
+            $params['studentid']            =       $studentid;
+            $params['restrictedstart']      =       $restrictedstart;
+            $params['restrictedend']        =       $restrictedend;
+
+
+            $bookingsinperiod = $DB->get_records_sql($sql, $params);
+
+            if (count($bookingsinperiod) >= $maxbookingnumber) $prohibted = true;
+
+        }
+
+        return  $prohibted;
 
     }
 

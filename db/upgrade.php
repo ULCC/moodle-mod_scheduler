@@ -333,7 +333,8 @@ function xmldb_scheduler_upgrade($oldversion=0) {
         $table->add_field('schedulerid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null);
         $table->add_field('studentid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null,0);
         $table->add_field('groupid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null,0);
-        $table->add_field('status', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null,0);
+        $table->add_field('status', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null,0);
+        $table->add_field('declined', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null,0);
         $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null);
         $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null);
 
@@ -349,7 +350,7 @@ function xmldb_scheduler_upgrade($oldversion=0) {
         // Add waitinglist fields to the scheduler table
         $table = new xmldb_table('scheduler');
 
-        $field = new xmldb_field('usewaitinglist', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'bookinginstructionsformat');
+        $field = new xmldb_field('usewaitinglist', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'bookinginstructionsformat');
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }

@@ -47,8 +47,13 @@ function scheduler_book_slot($scheduler, $slotid, $userid, $groupid, $mform, $fo
     $errormessage = '';
 
     $bookinglimit = $scheduler->count_bookable_appointments($userid, false);
+
+    $bookingprohibited  =   $scheduler->booking_prohibited($userid,$slot->id);
+
     if ($bookinglimit == 0) {
         $errormessage = get_string('selectedtoomany', 'scheduler', $bookinglimit);
+    } else if ($bookingprohibited) {
+        $errormessage = get_string('bookingrestrictionmsg', 'scheduler', $bookinglimit);
     } else {
         // Validate our user ids.
         $existingstudents = array();
@@ -58,6 +63,8 @@ function scheduler_book_slot($scheduler, $slotid, $userid, $groupid, $mform, $fo
         $userstobook = array_diff($userstobook, $existingstudents);
 
         $remaining = $slot->count_remaining_appointments();
+
+
         // If the slot is already overcrowded...
         if ($remaining >= 0 && $remaining < $requiredcapacity) {
             if ($requiredcapacity > 1) {
