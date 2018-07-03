@@ -47,6 +47,7 @@ $string['event_slotdeleted'] = 'Scheduler slot deleted';
 $string['messageprovider:invitation'] = 'Invitation to book a slot';
 $string['messageprovider:bookingnotification'] = 'Notification when a booking is made or cancelled';
 $string['messageprovider:reminder'] = 'Reminder of an upcoming appointment';
+$string['messageprovider:bookingspace'] =   'Notification that a slot has become avialbale for you to book when you are on a tutorial waiting list';
 
 /* ***** Search areas ***** */
 $string['search:activity'] = 'Scheduler - activity information';
@@ -279,12 +280,13 @@ $string['mixindivgroup_desc'] = 'Where group scheduling is enabled, allow indivi
 $string['introduction'] = 'Introduction';
 $string['isnonexclusive'] = 'Non-exclusive';
 $string['landscape'] = 'Landscape';
-$string['leavewaitinglist']     =   'Leave Wating List';
+$string['leavewaitinglist']     =   'Leave Waiting List';
 $string['leavewaitinglistintro']     =   'You are currently in the waiting list for this event if you would like to be removed from the waiting list click the button below';
 $string['lengthbreakdown'] = 'By slot duration';
 $string['limited'] = 'Limited ({$a} left)';
 $string['location'] = 'Location';
 $string['maxbookings']  =   'Booking restrictions';
+$string['maxbookings_desc'] =   'Enable this to place a limit on the number of bookings that a user can make within a period of time';
 $string['markseen'] = 'After you have had an appointment with a student please mark them as "Seen" by clicking the checkbox near to their user picture above.';
 $string['markasseennow'] = 'Mark as seen now';
 $string['maxgrade'] = 'Take the highest grade';
@@ -565,6 +567,12 @@ $string['guardtime_help'] = 'A guard time prevents students from changing their 
 <p>If the guard time is enabled and set to, for example, 2 hours, then students will be unable to book a slot that starts in less than 2 hours time from now,
 and they will be unable to drop an appointment if it start in less than 2 hours.</p>';
 
+
+$string['usewaitinglist_help']  =   'Use the waiting list to allow students to queue for slots and be notified when a new slot becomes availanle';
+
+$string['waitinglistsize_help'] =   'Specify the number of students that may put their name on a waiting list before it closes';
+
+$string['waitinglistunlock_help']   =   'Use this to specify a date when the waiting list will be opened. When the waiting list is opened a notification is sent to all of those on the list offering them the chance to take any remaining slots in the scheduler event in a first come first servered basis';
 
 /* ***********  E-mail templates from here on ************ */
 

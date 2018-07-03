@@ -111,6 +111,7 @@ class mod_scheduler_mod_form extends moodleform_mod {
         $options['1'] = get_string('yes');
         $mform->addElement('select', 'usewaitinglist', get_string('usewaitinglist', 'scheduler'), $options);
         $mform->setDefault('usewaitinglist', '0');
+        $mform->addHelpButton('usewaitinglist', 'usewaitinglist', 'scheduler');
 
         $waitinglistoptions = array();
         $waitinglistoptions['0'] = get_string('unlimited', 'scheduler');
@@ -121,6 +122,7 @@ class mod_scheduler_mod_form extends moodleform_mod {
         $mform->addElement('select', 'waitinglistsize', get_string('waitinglistsize', 'scheduler'), $waitinglistoptions);
         $mform->setDefault('waitinglistsize', 1);
         $mform->disabledIf('waitinglistsize', 'usewaitinglist', 'eq', '0');
+        $mform->addHelpButton('waitinglistsize', 'waitinglistsize', 'scheduler');
 
         $mform->addElement('date_time_selector', 'waitinglistunlock', get_string('waitinglistunlock','scheduler'),array('optional' => true));
         $mform->disabledIf('waitinglistunlock', 'usewaitinglist', 'eq', '0');
