@@ -29,36 +29,59 @@
     {
         "name": "test",
         "id": "test0",
-		"numberofbookings": [
-            { "name": "1", "value": "1", "selected": true },
-            { "name": "2", "value": "2", "selected": false }
-        ],
-        "bookingperiod": [
-            { "name": "1 day", "value": "86400", "selected": true },
-            { "name": "2 days", "value": "172800", "selected": false }
-			{ "name": "1 week", "value": "604800", "selected": false }
-			{ "name": "2 weeks", "value": "1209600", "selected": false }
-			{ "name": "3 weeks", "value": "1814400", "selected": false }
-        ]
-        
+		{"cateogoryrestrictions":
+            [
+                "numberofbookings": [
+                    { "name": "1", "value": "1", "selected": true },
+                    { "name": "2", "value": "2", "selected": false }
+                ],
+                "bookingperiod": [
+                    { "name": "1 day", "value": "86400", "selected": true },
+                    { "name": "2 days", "value": "172800", "selected": false }
+                    { "name": "1 week", "value": "604800", "selected": false }
+                    { "name": "2 weeks", "value": "1209600", "selected": false }
+                    { "name": "3 weeks", "value": "1814400", "selected": false }
+                ],
+                "category": [
+                                { "name": "Miscellanous", "value": "1", "selected": true },
+                                { "name": "Category 1", "value": "62", "selected": false }
+                                { "name": "Category 2", "value": "9", "selected": false }
+                                { "name": "Category 3", "value": "34", "selected": false }
+                                { "name": "Category 4", "value": "8", "selected": false }
+                            ]
+            }
+        }
     }
 }}
 <div class="form-time defaultsnext text-ltr">
+<div>
     <label class="accesshide" for="{{id}}enabled">{{enabledstr}}</label>{{enabledstr}}
     <input type="hidden" name="{{name}}[enabled]" value="0" >
-    <input type="checkbox" name="{{name}}[enabled]" value="1" id="{{id}}enabled" {{#checked}}checked{{/checked}} class="restrictbookings">
+    <input type="checkbox" name="{{name}}[enabled]" value="1" id="{{id}}enabled" {{#checked}}checked{{/checked}} >
+</div>
+{{#cateogoryrestrictions}}
+<div class="restrictbookings_category">
+<select id="{{id}}category" name="{{name}}[category][]" class="restrictbookings">
+            {{#category}}
+                <option value="{{value}}" {{#selected}}selected{{/selected}}>{{name}}</option>
+            {{/category}}
+        </select>
     <label class="accesshide" for="{{id}}booking">{{bookingstr}}</label>{{bookingstr}}
-    <select id="{{id}}booking" name="{{name}}[booking]" class="restrictbookings">
+    <select id="{{id}}booking" name="{{name}}[booking][]" class="restrictbookings">
         {{#numberofbookings}}
             <option value="{{value}}" {{#selected}}selected{{/selected}}>{{name}}</option>
         {{/numberofbookings}}
     </select>
     <label class="accesshide" for="{{id}}period">{{periodstr}}</label>{{periodstr}}
-    <select id="{{id}}period" name="{{name}}[period]" class="restrictbookings">
+    <select id="{{id}}period" name="{{name}}[period][]" class="restrictbookings">
         {{#bookingperiod}}
             <option value="{{value}}" {{#selected}}selected{{/selected}}>{{name}}</option>
         {{/bookingperiod}}
     </select>
 
+</div>
+{{/cateogoryrestrictions}}
+<div><a href="#" id="restrictbookings_add">Add</a>/<a href="#" id="restrictbookings_remove">Remove</a>
+</div>
 </div>
 

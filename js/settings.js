@@ -2,12 +2,10 @@ var M = M || {};
 
 M.mod_scheduler = {
 
-    restrictbookings  : function (e) {
+    restrictbookings  : function (e,maximum) {
 
-        console.log('test');
-        console.log(document.getElementById('id_s_mod_scheduler_maxbookingsenabled'));
 
-        M.mod_scheduler.retrictionenbled(e);
+        M.mod_scheduler.retrictionenbled(e,maximum);
 
 
 
@@ -20,26 +18,32 @@ M.mod_scheduler = {
     },
 
 
-    retrictionenbled    :   function    (e)     {
+    retrictionenbled    :   function    (e,maximum)     {
+
 
         $markingsenabled    =   document.getElementById('id_s_mod_scheduler_maxbookingsenabled');
 
         if (document.getElementById("id_s_mod_scheduler_maxbookingsenabled").checked  ==  true)   {
-
-            console.log('enabled');
-
-disabled    =   false;
-
+            disabled    =   false;
         } else {
-
-            console.log('disabled');
-
             disabled    =   true;
-
         }
 
-        $('#id_s_mod_scheduler_maxbookingsbooking').attr('disabled',disabled);
-        $('#id_s_mod_scheduler_maxbookingsperiod').attr('disabled',disabled);
+        $(".restrictbookings").each(function (e,elem)    {
+            $(elem).attr('disabled',disabled);
+        });
+
+        $("#restrictbookings_add").on("click",function()    {
+            if (maximum != 0 && $(".restrictbookings_category").length < maximum)
+
+            $(".restrictbookings_category").first().clone().insertAfter($(".restrictbookings_category").last());
+        });
+
+        $("#restrictbookings_remove").on("click",function()    {
+            if ($(".restrictbookings_category").length > 1)
+            $(".restrictbookings_category").last().remove();
+        });
+
 
     }
 

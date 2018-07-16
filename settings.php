@@ -12,7 +12,7 @@ defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
 
-
+    global  $DB;
 
     require_once($CFG->dirroot.'/mod/scheduler/lib.php');
 
@@ -60,11 +60,23 @@ if ($ADMIN->fulltree) {
     $periodoptions[604800]   =   '1 week';
     $periodoptions[1209600]   =   '2 weeks';
 
+    $categories         =   $DB->get_records('course_categories');
+    $categoryoptions    =   array();
+
+
+
+    foreach($categories     as      $c) {
+        $categoryoptions[$c->id]    =   $c->name;
+
+    }
+
+    $maxcategorys       =   (!empty($categories))   ?   count($categories) :   0;
+
     $settings->add(new setting_restrictbookings('mod_scheduler/maxbookings',
         'mod_scheduler/bookingperiod',
         get_string('maxbookings', 'scheduler'),
         get_string('maxbookings_desc', 'scheduler'),
-        5, $bookingoptions, $periodoptions));
+        5, $bookingoptions, $periodoptions, $categoryoptions, $maxcategorys));
 
    //$settings->add(new )
 
