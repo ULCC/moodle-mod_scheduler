@@ -1485,8 +1485,14 @@ class scheduler_instance extends mvc_record_model {
 
         foreach ($schedulers    as      $s)     {
 
-            scheduler_waiting_list::send_unlock_messages($s);
+            $scheduler          =   scheduler_instance::load_by_id($s->id);
 
+            $availableslots     =   $scheduler->get_slots_without_appointment();
+
+            if (!empty($availableslots)) {
+                scheduler_waiting_list::send_unlock_messages($s);
+
+            }
         }
 
 

@@ -14,6 +14,9 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once(dirname(__FILE__).'/../../model/scheduler_instance.php');
 require_once(dirname(__FILE__).'/../../model/scheduler_waiting_list.php');
+require_once(dirname(__FILE__).'/../../model/scheduler_slot.php');
+require_once(dirname(__FILE__).'/../../model/scheduler_appointment.php');
+
 
 /**
  *  Scheduled background task for sending automated messages to users on waiting lists
