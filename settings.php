@@ -66,7 +66,7 @@ if ($ADMIN->fulltree) {
 
 
     foreach($categories     as      $c) {
-        $categoryoptions[$c->id]    =   $c->name;
+        $categoryoptions[$c->id]    =   $c->name ;
 
     }
 

@@ -58,7 +58,7 @@ function scheduler_book_slot($scheduler, $slotid, $userid, $groupid, $mform, $fo
 
         $restrictionperiodtxt          =   '';
 
-        switch  ($restrictionperiod)  {
+        switch  ($bookingprohibited)  {
 
             case   86400 :
                 $restrictionperiodtxt   =   '1 day';

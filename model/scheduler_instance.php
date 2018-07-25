@@ -1060,41 +1060,104 @@ class scheduler_instance extends mvc_record_model {
 
         if ($bookingrestrictionsenabled) {
 
-            $slot       =   scheduler_slot::load_by_id($slotid,$this);
+            $slot               =   scheduler_slot::load_by_id($slotid,$this);
 
+            $restriction        =   $this->get_restriction($slotid);
 
-            //    if (!empty($allowed) && !empty($maxbookingenabled))   {
+            if (!empty($restriction)) {
+                $periodsplit = $restriction['period'] / 2;
 
-            $maxbookingnumber = get_config('mod_scheduler', 'maxbookings');
-            $maxbookingperiod = get_config('mod_scheduler', 'maxbookings_period');
+                $restrictedstart = $slot->starttime - $periodsplit;
+                $restrictedend = $restrictedstart + $restriction['period'];
 
-            $periodsplit        =   $maxbookingperiod   /2;
-
-            $restrictedstart        =        $slot->starttime   -   $periodsplit;
-            $restrictedend          =        $restrictedstart   +   $maxbookingperiod;
-
-            $sql = "        SELECT   * 
-                            FROM       {scheduler_appointment} sa,
-					                    {scheduler_slots}	ss
+                $sql = "SELECT   sa.* 
+                            FROM       	{scheduler_appointment}  sa,
+					                    {scheduler_slots}	ss,
+                                        {scheduler}	s,
+                                        {course}	c,
+                                        {course_categories}	cc	
                              WHERE       sa.slotid	=	ss.id
                              AND       studentid  =  :studentid
                              AND        ss.starttime >= :restrictedstart
-                             AND        ss.starttime <=  :restrictedend";
+                             AND        ss.starttime <=  :restrictedend
+                             AND 	ss.`schedulerid`  = s.`id`
+                             AND	s.`course`	=	c.`id`
+                             AND	c.`category`	=	cc.id
+                             AND	cc.path 	LIKE	'{$restriction['categorypath']}%'";
 
 
-            $params         =       array();
-            $params['studentid']            =       $studentid;
-            $params['restrictedstart']      =       $restrictedstart;
-            $params['restrictedend']        =       $restrictedend;
+                $params = array();
+                $params['studentid'] = $studentid;
+                $params['restrictedstart'] = $restrictedstart;
+                $params['restrictedend'] = $restrictedend;
 
 
-            $bookingsinperiod = $DB->get_records_sql($sql, $params);
+                $bookingsinperiod = $DB->get_records_sql($sql, $params);
 
-            if (count($bookingsinperiod) >= $maxbookingnumber) $prohibted = true;
+                if (count($bookingsinperiod) >= $restriction['maxbookings']) $prohibted = $restriction['period'];
+            }
 
         }
 
         return  $prohibted;
+
+    }
+
+    /**
+     * Returns the restrictions that are applicable to the slot being booked by the student
+     *
+     * @param $slotid
+     * @return array|bool
+     */
+
+    public function get_restriction($slotid)      {
+
+        global  $DB;
+
+        $sql    =   "SELECT     s.id, course
+                     FROM       {scheduler}   AS s,
+                                {scheduler_slots}   AS ss
+                     WHERE      s.id    =   ss.schedulerid
+                     AND        ss.id   =   :slotid";
+
+        $coursescheduler      =       $DB->get_record_sql($sql,array('slotid'=>$slotid));
+
+
+         $sql   =   "SELECT     cat.*
+                     FROM       {course}  c,
+                                {course_categories} cat
+                     WHERE      c.category    =   cat.id
+                     AND        c.id          =   :course";
+
+        $coursecategory     =   $DB->get_record_sql($sql,array('course'=>$coursescheduler->course));
+
+        $categorypath       =   explode("/",$coursecategory->path);
+
+        $bookingrestrictions           =   get_config('mod_scheduler','maxbookings');
+        $periodrestrictions           =   get_config('mod_scheduler','maxbookings_period');
+        $restrictedcats           =   get_config('mod_scheduler','maxbookings_category');
+
+        $bookingrestrictions            =   explode(',',$bookingrestrictions);
+        $periodrestrictions             =   explode(',',$periodrestrictions);
+        $restrictedcats           =   explode(',',$restrictedcats);
+
+        $restriction       =   false;
+
+        foreach($categorypath   as  $categoryid)      {
+            if (!empty($categoryid) && array_search($categoryid,$restrictedcats) !== false)   {
+                $index   =   array_search($categoryid,$restrictedcats);
+
+                $category   =   $DB->get_record('course_categories',array('id'=>$restrictedcats[$index]));
+
+                $restriction        =       array('maxbookings'     =>$bookingrestrictions[$index],
+                    'period'      =>$periodrestrictions[$index],
+                    'category'    =>$restrictedcats[$index],
+                    'categorypath' => $category->path);
+                break;
+            }
+        }
+
+        return (!empty($restriction))       ?  $restriction : false;
 
     }
 
