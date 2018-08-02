@@ -13,6 +13,19 @@ M.mod_scheduler = {
             M.mod_scheduler.retrictionenbled(e);
         });
 
+        $('#id_s_mod_scheduler_maxbookingscourse').click(function (e) {
+            M.mod_scheduler.retrictionenbled(e);
+        });
+
+        $(".category").each(function (e,elem)    {
+
+
+
+            $(elem).on("change",function()  {
+                M.mod_scheduler.loadcategorycourses($(this),$(this).siblings(".course").get(0));
+            });
+        });
+
 
 
     },
@@ -45,6 +58,32 @@ M.mod_scheduler = {
         });
 
 
+    },
+
+
+    loadcategorycourses     :   function    (element,courseselect)  {
+
+        categoryid = $(element).val();
+
+        $.post( "/mod/scheduler/getcategorycourses.php",
+            {"categoryid" : categoryid})
+            .done(function( data ) {
+
+                    $(courseselect).empty();
+                    categorycourses =   JSON.parse(data);
+
+                    options ="";
+                    options += '<option value="-1">All courses</option>';
+                    $.each(categorycourses, function( k ,v) {
+                        options += '<option value="'+ k + '">' + v + '</option>';
+
+                    });
+
+                    $(courseselect).append(options);
+            });
     }
+
+
+
 
 }

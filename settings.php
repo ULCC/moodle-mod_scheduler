@@ -72,11 +72,19 @@ if ($ADMIN->fulltree) {
 
     $maxcategorys       =   (!empty($categories))   ?   count($categories) :   0;
 
+    $courses            =   $DB->get_records('course');
+
+    $courseoptions      =   array(-1=>get_string('allcourses','scheduler'));
+
+    foreach($courses     as      $c) {
+        if ($c->id != 1)     $courseoptions[$c->id]    =   $c->shortname ;
+    }
+
     $settings->add(new setting_restrictbookings('mod_scheduler/maxbookings',
         'mod_scheduler/bookingperiod',
         get_string('maxbookings', 'scheduler'),
         get_string('maxbookings_desc', 'scheduler'),
-        5, $bookingoptions, $periodoptions, $categoryoptions, $maxcategorys));
+        5, $bookingoptions, $periodoptions, $categoryoptions, $maxcategorys, $courseoptions));
 
    //$settings->add(new )
 

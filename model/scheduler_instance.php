@@ -1133,6 +1133,9 @@ class scheduler_instance extends mvc_record_model {
 
         $categorypath       =   explode("/",$coursecategory->path);
 
+        //reverse the array so the category the course is in is first
+        //$categorypath       =   array_reverse($categorypath);
+
         $bookingrestrictions           =   get_config('mod_scheduler','maxbookings');
         $periodrestrictions           =   get_config('mod_scheduler','maxbookings_period');
         $restrictedcats           =   get_config('mod_scheduler','maxbookings_category');

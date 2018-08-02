@@ -61,10 +61,16 @@
 </div>
 {{#cateogoryrestrictions}}
 <div class="restrictbookings_category">
-<select id="{{id}}category" name="{{name}}[category][]" class="restrictbookings">
+<select id="{{id}}category" name="{{name}}[category][]" class="restrictbookings category">
             {{#category}}
                 <option value="{{value}}" {{#selected}}selected{{/selected}}>{{name}}</option>
             {{/category}}
+        </select>
+        <label class="accesshide" for="{{id}}booking">{{coursestr}}</label>
+        <select id="{{id}}course" name="{{name}}[course][]" class="restrictbookings course">
+            {{#course}}
+                <option value="{{value}}" {{#selected}}selected{{/selected}}>{{name}}</option>
+            {{/course}}
         </select>
     <label class="accesshide" for="{{id}}booking">{{bookingstr}}</label>{{bookingstr}}
     <select id="{{id}}booking" name="{{name}}[booking][]" class="restrictbookings">

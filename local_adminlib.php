@@ -4,7 +4,7 @@ class   setting_restrictbookings  extends     admin_setting  {
 
 
 
-    public function __construct($numberofbookingsname, $periodname, $visiblename, $description, $defaultsetting,$bookingoptions,$periodoptions, $categoryoptions, $maxcat) {
+    public function __construct($numberofbookingsname, $periodname, $visiblename, $description, $defaultsetting,$bookingoptions,$periodoptions, $categoryoptions, $maxcat, $courseoptions) {
 
         $this->numberofbookingsname      =   $numberofbookingsname;
         $this->periodname     =   $periodname;
@@ -12,16 +12,22 @@ class   setting_restrictbookings  extends     admin_setting  {
         $this->bookingoptions   =   $bookingoptions;
         $this->periodoptions    =   $periodoptions;
         $this->categoryoptions  =   $categoryoptions;
+        $this->courseoptions    =   $courseoptions;
 
          $t     =   explode('/', $this->numberofbookingsname);
          $this->numberofbookingsname_number      =  $t[1];
+        $this->numberofbookingsname_period      =  $t[1].'_period';
+        $this->numberofbookingsname_category  =  $t[1].'_category';
+        $this->numberofbookingsname_course  =  $t[1].'_course';
+        $this->numberofbookingsname_enabled =   $t[1].'_enabled';
+        /*
             $t     =    explode('/', $this->numberofbookingsname.'_period');
         $this->numberofbookingsname_period      =  $t[1];
         $t     =    explode('/', $this->numberofbookingsname.'_category');
          $this->numberofbookingsname_category  =  $t[1];
         $t     =    explode('/', $this->numberofbookingsname.'_enabled');
         $this->numberofbookingsname_enabled =   $t[1];
-
+*/
         $this->maximumcats      =   $maxcat;
 
         parent::__construct($numberofbookingsname, $visiblename, $description, $defaultsetting);
@@ -56,9 +62,16 @@ class   setting_restrictbookings  extends     admin_setting  {
             $categorydata    =    0;
         }
 
+        if (isset($data['course']))    {
+            $coursedata    =   (is_array($data['course']))    ?   implode(',',$data['course'])   : $data['course']  ;
+        }   else    {
+            $coursedata    =    0;
+        }
+
 
         $result = $this->config_write($this->numberofbookingsname_number, $bookingdata) && $this->config_write($this->numberofbookingsname_period, $perioddata)
-            && $this->config_write($this->numberofbookingsname_category, $categorydata) && $this->config_write($this->numberofbookingsname_enabled, (int)$data['enabled']);
+            && $this->config_write($this->numberofbookingsname_category, $categorydata) && $this->config_write($this->numberofbookingsname_course, $coursedata)
+            && $this->config_write($this->numberofbookingsname_enabled, (int)$data['enabled']);
         return ($result ? '' : get_string('errorsetting', 'admin'));
     }
 
@@ -67,6 +80,7 @@ class   setting_restrictbookings  extends     admin_setting  {
         $bookings = $this->config_read($this->numberofbookingsname_number);
         $periods = $this->config_read($this->numberofbookingsname_period);
         $categories = $this->config_read($this->numberofbookingsname_category);
+        $courses    = $this->config_read($this->numberofbookingsname_course);
         $enabled = $this->config_read($this->numberofbookingsname_enabled);
         if (is_null($bookings) || is_null($periods) || is_null($categories) || is_null($enabled)) {
             return NULL;
@@ -75,9 +89,10 @@ class   setting_restrictbookings  extends     admin_setting  {
         $bookings           =   explode(",",$bookings);
         $periods            =   explode(",",$periods);
         $categories         =   explode(",",$categories);
+        $courses         =   explode(",",$courses);
 
 
-        return array('booking' => $bookings, 'period' => $periods, 'category'=> $categories, 'enabled' => $enabled);
+        return array('booking' => $bookings, 'period' => $periods, 'category'=> $categories, 'course' => $courses, 'enabled' => $enabled);
     }
 
     /**
@@ -142,10 +157,24 @@ class   setting_restrictbookings  extends     admin_setting  {
                 $categoryoptions[] = $t;
             }
 
+            $courseoptions    =   array();
+
+            foreach ($this->courseoptions as $k => $v) {
+
+                $t = array();
+
+                $t['name'] = $v;
+                $t['value'] = $k;
+                $t['selected'] = $k == $data['course'][$i];
+
+                $courseoptions[] = $t;
+            }
+
             $restrictions   =   new     stdClass();
             $restrictions->numberofbookings     =       $numberofbookings;
             $restrictions->bookingperiod        =       $bookingperiod;
             $restrictions->category             =       $categoryoptions;
+            $restrictions->course               =       $courseoptions;
 
             $catgoryrestriction[]       =       $restrictions;
 
@@ -161,6 +190,7 @@ class   setting_restrictbookings  extends     admin_setting  {
 
         $context->checked           =   $data['enabled'] == 1;
         $context->enablestr               =   'enable';
+        $context->coursestr               =   ' in ';
         $context->bookingstr               =   ' allow ';
         $context->periodstr               =   ' bookings in ';
         $context->maximum               =   $this->maximumcats;
