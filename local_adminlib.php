@@ -39,11 +39,6 @@ class   setting_restrictbookings  extends     admin_setting  {
             return '';
         }
 
-
-        var_dump($data);
-        print_r($data);
-       // exit;
-
         if (isset($data['booking']))    {
                 $bookingdata    =   (is_array($data['booking']))    ?   implode(',',$data['booking'])   : $data['booking']  ;
         } else {
