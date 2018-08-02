@@ -70,6 +70,7 @@ $string['addslot'] = 'You can add additional appointment slots at any time.';
 $string['addstudenttogroup'] = 'Add this student to appointment group';
 $string['addedtowaitinglist']   =   'You have been added to the waiting list';
 $string['allappointments'] = 'All appointments';
+$string['allcourses']   =   'All courses';
 $string['allononepage'] = 'All slots on one page';
 $string['allowgroup'] = 'Exclusive slot - click to change';
 $string['allteachersgrading'] = 'Teachers can grade all appointments';

@@ -1070,20 +1070,35 @@ class scheduler_instance extends mvc_record_model {
                 $restrictedstart = $slot->starttime - $periodsplit;
                 $restrictedend = $restrictedstart + $restriction['period'];
 
+
+                $from       =   "";
+
+                $where      =   " AND	s.`course`	=	 {$restriction['course']} ";
+
+                //if this is a restriction that applies to a category
+                if ($restriction['course'] == -1)   {
+
+                    $from       =   " ,{course_categories}	cc";
+
+                    $where      =   "AND	s.`course`	=	c.`id`
+                                    AND	c.`category`	=	cc.id
+                                    AND	cc.path 	LIKE	'{$restriction['categorypath']}%'";
+
+                }
+
                 $sql = "SELECT   sa.* 
                             FROM       	{scheduler_appointment}  sa,
 					                    {scheduler_slots}	ss,
                                         {scheduler}	s,
-                                        {course}	c,
-                                        {course_categories}	cc	
+                                        {course}	c
+                                        {$from}
                              WHERE       sa.slotid	=	ss.id
                              AND       studentid  =  :studentid
                              AND        ss.starttime >= :restrictedstart
                              AND        ss.starttime <=  :restrictedend
                              AND 	ss.`schedulerid`  = s.`id`
-                             AND	s.`course`	=	c.`id`
-                             AND	c.`category`	=	cc.id
-                             AND	cc.path 	LIKE	'{$restriction['categorypath']}%'";
+                             {$where}
+                             ";
 
 
                 $params = array();
@@ -1122,43 +1137,67 @@ class scheduler_instance extends mvc_record_model {
 
         $coursescheduler      =       $DB->get_record_sql($sql,array('slotid'=>$slotid));
 
+        $bookingrestrictions            =   get_config('mod_scheduler','maxbookings');
+        $periodrestrictions             =   get_config('mod_scheduler','maxbookings_period');
+        $restrictedcats                 =   get_config('mod_scheduler','maxbookings_category');
+        $restrictedcourses              =   get_config('mod_scheduler','maxbookings_course');
 
-         $sql   =   "SELECT     cat.*
-                     FROM       {course}  c,
+        $bookingrestrictions            =   explode(',',$bookingrestrictions);
+        $periodrestrictions             =   explode(',',$periodrestrictions);
+        $restrictedcats                 =   explode(',',$restrictedcats);
+        $restrictedcourses              =   explode(',',$restrictedcourses);
+
+        $restriction        =   false;
+
+        //lets check if the course the slot is in exists in the restricted courses array
+        $index        =       array_search($coursescheduler->course,$restrictedcourses);
+
+        //if no restriction was found for the individual course then lets check to see if there is a rule for the
+        //category that the course is in or any of the categorys parent categories
+        if ($index === false)   {
+
+            $sql   =   "SELECT     c.id as course_id, cat.*
+                        FROM       {course}  c,
                                 {course_categories} cat
-                     WHERE      c.category    =   cat.id
-                     AND        c.id          =   :course";
+                        WHERE      c.category    =   cat.id
+                        AND        c.id          =   :course";
 
-        $coursecategory     =   $DB->get_record_sql($sql,array('course'=>$coursescheduler->course));
+            $coursecategory     =   $DB->get_record_sql($sql,array('course'=>$coursescheduler->course));
 
-        $categorypath       =   explode("/",$coursecategory->path);
+            $categorypath       =   explode("/",$coursecategory->path);
+
+            foreach($categorypath   as  $categoryid)      {
+                if (!empty($categoryid) && array_search($categoryid,$restrictedcats) !== false)   {
+
+
+                    $index   =   array_search($categoryid,$restrictedcats);
+
+
+                    //make sure the category reference isn't part of the reference to a course
+                    if ($restrictedcourses[$index]  == -1) {
+                        break;
+                    } else {
+                        $index  =   false;
+                    }
+                }
+            }
+
+        }
+
+        if ($index !== false)   {
+            $category   =   $DB->get_record('course_categories',array('id'=>$restrictedcats[$index]));
+
+            $restriction        =       array('maxbookings'     =>$bookingrestrictions[$index],
+                'period'      =>$periodrestrictions[$index],
+                'category'    =>$restrictedcats[$index],
+                'course'      =>$restrictedcourses[$index],
+                'categorypath' => $category->path);
+        }
+
 
         //reverse the array so the category the course is in is first
         //$categorypath       =   array_reverse($categorypath);
 
-        $bookingrestrictions           =   get_config('mod_scheduler','maxbookings');
-        $periodrestrictions           =   get_config('mod_scheduler','maxbookings_period');
-        $restrictedcats           =   get_config('mod_scheduler','maxbookings_category');
-
-        $bookingrestrictions            =   explode(',',$bookingrestrictions);
-        $periodrestrictions             =   explode(',',$periodrestrictions);
-        $restrictedcats           =   explode(',',$restrictedcats);
-
-        $restriction       =   false;
-
-        foreach($categorypath   as  $categoryid)      {
-            if (!empty($categoryid) && array_search($categoryid,$restrictedcats) !== false)   {
-                $index   =   array_search($categoryid,$restrictedcats);
-
-                $category   =   $DB->get_record('course_categories',array('id'=>$restrictedcats[$index]));
-
-                $restriction        =       array('maxbookings'     =>$bookingrestrictions[$index],
-                    'period'      =>$periodrestrictions[$index],
-                    'category'    =>$restrictedcats[$index],
-                    'categorypath' => $category->path);
-                break;
-            }
-        }
 
         return (!empty($restriction))       ?  $restriction : false;
 

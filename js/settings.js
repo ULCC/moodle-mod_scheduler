@@ -47,7 +47,7 @@ M.mod_scheduler = {
         });
 
         $("#restrictbookings_add").on("click",function()    {
-            if (maximum != 0 && $(".restrictbookings_category").length < maximum)
+           /* if (maximum != 0 && $(".restrictbookings_category").length < maximum) */
 
             clonediv    =   $(".restrictbookings_category").first().clone().insertAfter($(".restrictbookings_category").last());
 
@@ -58,7 +58,7 @@ M.mod_scheduler = {
         });
 
         $("#restrictbookings_remove").on("click",function()    {
-            if ($(".restrictbookings_category").length > 1)
+             if ($(".restrictbookings_category").length > 1)
             $(".restrictbookings_category").last().remove();
         });
 
