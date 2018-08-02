@@ -49,7 +49,12 @@ M.mod_scheduler = {
         $("#restrictbookings_add").on("click",function()    {
             if (maximum != 0 && $(".restrictbookings_category").length < maximum)
 
-            $(".restrictbookings_category").first().clone().insertAfter($(".restrictbookings_category").last());
+            clonediv    =   $(".restrictbookings_category").first().clone().insertAfter($(".restrictbookings_category").last());
+
+            $(clonediv).children(".category").on("change",function()  {
+                M.mod_scheduler.loadcategorycourses($(this),$(this).siblings(".course").get(0));
+            });
+;
         });
 
         $("#restrictbookings_remove").on("click",function()    {
