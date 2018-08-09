@@ -1109,7 +1109,7 @@ class scheduler_instance extends mvc_record_model {
 
                 $bookingsinperiod = $DB->get_records_sql($sql, $params);
 
-                if (count($bookingsinperiod) >= $restriction['maxbookings']) $prohibted = $restriction['period'];
+                if (count($bookingsinperiod) >= $restriction['maxbookings'] && !empty($restriction['maxbookings'])) $prohibted = $restriction['period'];
             }
 
         }
