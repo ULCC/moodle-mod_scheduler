@@ -1078,7 +1078,7 @@ class scheduler_instance extends mvc_record_model {
                 //if this is a restriction that applies to a category
                 if ($restriction['course'] == -1)   {
 
-                    $from       =   " ,{course_categories}	cc";
+                    $from       =   ", {course}	c ,{course_categories}	cc";
 
                     $where      =   "AND	s.`course`	=	c.`id`
                                     AND	c.`category`	=	cc.id
@@ -1089,8 +1089,8 @@ class scheduler_instance extends mvc_record_model {
                 $sql = "SELECT   sa.* 
                             FROM       	{scheduler_appointment}  sa,
 					                    {scheduler_slots}	ss,
-                                        {scheduler}	s,
-                                        {course}	c
+                                        {scheduler}	s
+                                        
                                         {$from}
                              WHERE       sa.slotid	=	ss.id
                              AND       studentid  =  :studentid
