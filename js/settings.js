@@ -8,6 +8,18 @@ M.mod_scheduler = {
         M.mod_scheduler.retrictionenbled(e,maximum);
 
 
+        $( document ).ready(function() {
+            $(".category").each(function (e,elem)    {
+
+                    courseelement   =   $(elem).siblings(".course").val();
+
+                    selectedValue   =   $(elem).siblings(".course").val();
+
+                    M.mod_scheduler.loadcategorycourses($(elem),$(elem).siblings(".course").get(0),selectedValue);
+
+            });
+        });
+
 
         $('#id_s_mod_scheduler_maxbookingsenabled').click(function (e) {
             M.mod_scheduler.retrictionenbled(e);
@@ -18,13 +30,12 @@ M.mod_scheduler = {
         });
 
         $(".category").each(function (e,elem)    {
-
-
-
             $(elem).on("change",function()  {
-                M.mod_scheduler.loadcategorycourses($(this),$(this).siblings(".course").get(0));
+                M.mod_scheduler.loadcategorycourses($(this),$(this).siblings(".course").get(0),false);
             });
         });
+
+
 
 
 
@@ -66,7 +77,7 @@ M.mod_scheduler = {
     },
 
 
-    loadcategorycourses     :   function    (element,courseselect)  {
+    loadcategorycourses     :   function    (element,courseselect,selectvalue)  {
 
         categoryid = $(element).val();
 
@@ -85,6 +96,12 @@ M.mod_scheduler = {
                     });
 
                     $(courseselect).append(options);
+
+                    if (selectvalue != false) {
+                        $(courseselect).val(selectvalue).change();
+                    }
+
+
             });
     }
 
