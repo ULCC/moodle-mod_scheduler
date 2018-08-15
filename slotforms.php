@@ -557,6 +557,8 @@ class scheduler_addsession_form extends scheduler_slotform_base {
         $mform->addElement('date_time_selector', 'hideuntildate', get_string('displayfrom', 'scheduler'));
         $mform->setDefault('hideuntildate', time());
 
+
+
         $mform->disabledIf('hideuntildate', 'hideuntiltype', 'eq', 1);
 
         // Display slot from date - relative.
@@ -574,6 +576,32 @@ class scheduler_addsession_form extends scheduler_slotform_base {
         $mform->setDefault('hideuntilsel', 0);
 
         $mform->disabledIf('hideuntilrel', 'hideuntiltype', 'eq', 0);
+
+        $hours      =   array();
+
+        for($i=0;$i<24;$i++)     {
+
+            $hours[$i]    =   $i;
+
+        }
+
+        $minutes    =   array();
+
+        for($i=0;$i<60;$i++)     {
+
+            $minutes[$i]    =   $i;
+
+        }
+
+
+        $timegroup  =   array();
+
+        $timegroup[]    =   $mform->createElement('select', 'hour', '',$hours);
+        $timegroup[]    =   $mform->createElement('select', 'min', '',$minutes);
+
+        $mform->addGroup($timegroup, 'hideuntilreltime',get_string('displayfromtime', 'scheduler'),':');
+
+        $mform->disabledIf('hideuntilreltime', 'hideuntiltype', 'eq', 0);
 
         // E-mail reminder from.
         $remindersel = array();

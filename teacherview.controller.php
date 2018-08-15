@@ -72,7 +72,7 @@ function scheduler_action_doaddsession($scheduler, $formdata) {
                 if ($data->hideuntilrel == 0) {
                     $slot->hideuntil = time();
                 } else {
-                    $slot->hideuntil = make_timestamp($eventdate['year'], $eventdate['mon'], $eventdate['mday'], 6, 0) -
+                    $slot->hideuntil = make_timestamp($eventdate['year'], $eventdate['mon'], $eventdate['mday'], $data->hideuntilreltime['hour'], $data->hideuntilreltime['min']) -
                         $data->hideuntilrel;
                 }
             }   else    {
