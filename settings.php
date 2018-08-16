@@ -74,7 +74,8 @@ if ($ADMIN->fulltree) {
 
     $courses            =   $DB->get_records('course');
 
-    $courseoptions      =   array(-1=>get_string('allcourses','scheduler'));
+    $courseoptions      =   array(-1=>get_string('allcourses','scheduler'),
+        -2=>get_string('eachcourse','scheduler'));
 
     foreach($courses     as      $c) {
         if ($c->id != 1)     $courseoptions[$c->id]    =   $c->shortname ;
