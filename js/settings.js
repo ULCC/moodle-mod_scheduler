@@ -90,6 +90,7 @@ M.mod_scheduler = {
 
                     options ="";
                     options += '<option value="-1">All courses</option>';
+                    options += '<option value="-2">Each course</option>';
                     $.each(categorycourses, function( k ,v) {
                         options += '<option value="'+ k + '">' + v + '</option>';
 
