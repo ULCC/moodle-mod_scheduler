@@ -1166,18 +1166,34 @@ class scheduler_instance extends mvc_record_model {
 
             $categorypath       =   explode("/",$coursecategory->path);
 
+            //reverse the array so we get the most specific category first
+            $categorypath   =   array_reverse($categorypath);
+
+
             foreach($categorypath   as  $categoryid)      {
-                if (!empty($categoryid) && array_search($categoryid,$restrictedcats) !== false)   {
+
+                //only check for a category rule if categoryid is bit empty and the categoryid is in the
+                //restricted categories array
+                if (!empty($categoryid) && array_search($categoryid,$restrictedcats) !== false) {
+
+                    //as the category could be in the array more than once we will loop through to find a instance that
+                    //doesnt relate to a course
+                    foreach ($restrictedcats    as      $i  =>  $catid) {
+
+                        if ($categoryid ==  $catid) {
+                            //$index = array_search($categoryid, $restrictedcats);
 
 
-                    $index   =   array_search($categoryid,$restrictedcats);
-
-
-                    //make sure the category reference isn't part of the reference to a course
-                    if ($restrictedcourses[$index]  == -1) {
-                        break;
-                    } else {
-                        $index  =   false;
+                            //make sure the category reference isn't part of the reference to a course
+                            //-1 = All courses
+                            //-2 = Each course
+                            if ($restrictedcourses[$i] == -1 || $restrictedcourses[$i] == -2) {
+                                $index  =   $i;
+                                break 2;
+                            } else {
+                                $index = false;
+                            }
+                        }
                     }
                 }
             }
@@ -1192,6 +1208,8 @@ class scheduler_instance extends mvc_record_model {
                 'category'    =>$restrictedcats[$index],
                 'course'      =>$restrictedcourses[$index],
                 'categorypath' => $category->path);
+
+        $restriction['course']        =   ($restriction['course']  == -2)   ? $coursescheduler->course   : $restriction['course']  ;
         }
 
 
