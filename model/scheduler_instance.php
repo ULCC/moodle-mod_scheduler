@@ -1447,6 +1447,12 @@ class scheduler_instance extends mvc_record_model {
         return empty($this->current_waiting_list_size());
     }
 
+    public function slots_greater_than_waiting_list_size($studentid)      {
+        $slotsavailable         =       $this->get_slots_available_to_student($studentid);
+        $waitinglistsize        =       $this->current_waiting_list_size();
+        return  (count($slotsavailable) >  $waitinglistsize);
+    }
+
 
     /**
      * check of the given student (or current user) is n the waiting list
