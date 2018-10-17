@@ -13,6 +13,8 @@ class scheduler_waiting_list      extends mvc_child_record_model {
     const   ACCEPTED    =   2;
     const   DECLINED    =   3;
     const   REMOVED     =   4;
+    const   REMOVED_BY_SYSTEM       =   5;
+    const   REMOVED_BY_ADMIN      =   6;
 
     /**
      * scheduler_waiting_list constructor.
@@ -121,6 +123,28 @@ class scheduler_waiting_list      extends mvc_child_record_model {
         $this->data->timemodified     =   time();
         $this->data->status     =   self::REMOVED;
          parent::save();
+    }
+
+    /**
+     *  Sets the status of a waiting list entry to removed
+     * by system
+     */
+
+    public function     system_entry_removeal()     {
+        $this->data->timemodified     =   time();
+        $this->data->status     =   self::REMOVED_BY_SYSTEM;
+        parent::save();
+    }
+
+    /**
+     *  Sets the status of a waiting list entry to removed
+     * by teacher
+     */
+
+    public function     admin_entry_removeal()     {
+        $this->data->timemodified     =   time();
+        $this->data->status     =   self::REMOVED_BY_ADMIN;
+        parent::save();
     }
 
     /**
@@ -236,6 +260,16 @@ class scheduler_waiting_list      extends mvc_child_record_model {
                 case scheduler_waiting_list::REMOVED   :
 
                     $status = get_string('waitingremoved', 'scheduler');
+                    break;
+
+                case scheduler_waiting_list::REMOVED_BY_SYSTEM  :
+
+                    $status = get_string('waitingremovedbysystem', 'scheduler');
+                    break;
+
+                case scheduler_waiting_list::REMOVED_BY_ADMIN   :
+
+                    $status = get_string('waitingremovedbyadmin', 'scheduler');
                     break;
 
             }
