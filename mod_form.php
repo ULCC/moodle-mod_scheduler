@@ -125,7 +125,21 @@ class mod_scheduler_mod_form extends moodleform_mod {
         $mform->addHelpButton('waitinglistsize', 'waitinglistsize', 'scheduler');
 
         $mform->addElement('date_time_selector', 'waitinglistunlock', get_string('waitinglistunlock','scheduler'),array('optional' => true));
+
+
         $mform->disabledIf('waitinglistunlock', 'usewaitinglist', 'eq', '0');
+
+        //waiting list code
+        $options['0'] = get_string('no');
+        $options['1'] = get_string('yes');
+        $mform->addElement('select', 'clearwaitinglistonunhidden', get_string('clearwaitinglistonunhidden', 'scheduler'), $options);
+        $mform->setDefault('clearwaitinglistonunhidden', '0');
+        $mform->addHelpButton('clearwaitinglistonunhidden', 'clearwaitinglistonunhidden', 'scheduler');
+
+        $mform->disabledIf('clearwaitinglistonunhidden', 'usewaitinglist', 'eq', '0');
+
+
+
 
         // Grade settings.
         $this->standard_grading_coursemodule_elements();

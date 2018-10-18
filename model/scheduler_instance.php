@@ -1558,6 +1558,53 @@ class scheduler_instance extends mvc_record_model {
 
     }
 
+    public static   function    get_scheduler_with_unhidden_slots($starttime)       {
+
+        global  $DB;
+
+        $sql    =   "SELECT     DISTINCT(s.id) as schedulerid
+                     FROM       {scheduler}   s,
+                                {scheduler_slots}     ss
+                     WHERE      s.id  =   ss.schedulerid
+                     AND        s.clearwaitinglistonunhidden  = 1
+                     AND        hideuntil > :starttime
+                     AND        hideuntil < :timenow";
+
+        return       $DB->get_records_sql($sql,array('starttime'=>$starttime,'timenow'=>time()));
+    }
+
+
+    public static  function     clear_waitinglists($starttime)      {
+
+        global  $DB;
+
+        $schedulers     =       scheduler_instance::get_scheduler_with_unhidden_slots($starttime);
+
+        foreach ($schedulers    as      $s) {
+
+            $scheduler      = scheduler_instance::load_by_id($s->schedulerid);
+
+            $scheduler->clear_unresolved_waitinglist_entries();
+        }
+    }
+
+    public  function    clear_unresolved_waitinglist_entries()      {
+
+        global      $DB;
+
+        $sql        =       "UPDATE     {scheduler_waiting_list}    
+                             SET        status        =   :clearstatus
+                             WHERE      schedulerid   =   :schedulerid
+                             AND        status        <   :accepted";
+
+        $DB->execute($sql,array('clearstatus'=>scheduler_waiting_list::REMOVED_BY_ADMIN,'schedulerid'=>$this->id,'accepted'=>scheduler_waiting_list::ACCEPTED));
+
+
+    }
+
+
+
+
     public  function    get_waiting_list()      {
 
         return  $this->waiting_list;
