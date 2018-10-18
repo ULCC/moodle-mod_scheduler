@@ -121,6 +121,7 @@ $string['canbook1appointment'] = 'You can book one more appointment in this sche
 $string['canbooknappointments'] = 'You can book {$a} more appointments in this scheduler.';
 $string['canbooknofurtherappointments'] = 'You cannot book further appointments in this scheduler.';
 $string['canbookunlimitedappointments'] = 'You can book any number of appointments in this scheduler.';
+$string['clearwaitinglistwhenslotsunhidden']    =   'Clears the waiting list of scheduler when a unhidden slot is displayed';
 $string['chooseexisting'] = 'Choose existing';
 $string['choosingslotstart'] = 'Choosing the start time';
 $string['comments'] = 'Comments';

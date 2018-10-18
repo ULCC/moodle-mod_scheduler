@@ -34,5 +34,15 @@ $tasks = array(
                 'day' => '*',
                 'dayofweek' => '*',
                 'month' => '*'
+            ),
+            array(
+                'classname' => 'mod_scheduler\task\clear_waiting_lists',
+                'minute' => '*/5',
+                'hour' => '*',
+                'day' => '*',
+                'dayofweek' => '*',
+                'month' => '*'
             )
+
+
 );

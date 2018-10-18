@@ -1558,6 +1558,13 @@ class scheduler_instance extends mvc_record_model {
 
     }
 
+    /**
+     * Returns all schedulers that have had slots unhidden since the given start time and now. The unhidden slot must not
+     * have a appointment defined for it
+     *
+     * @param $starttime
+     * @return array
+     */
     public static   function    get_scheduler_with_unhidden_slots($starttime)       {
 
         global  $DB;
@@ -1565,15 +1572,23 @@ class scheduler_instance extends mvc_record_model {
         $sql    =   "SELECT     DISTINCT(s.id) as schedulerid
                      FROM       {scheduler}   s,
                                 {scheduler_slots}     ss
+                                LEFT JOIN {scheduler_appointment}   sa ON (ss.id = sa.slotid)
                      WHERE      s.id  =   ss.schedulerid
                      AND        s.clearwaitinglistonunhidden  = 1
                      AND        hideuntil > :starttime
-                     AND        hideuntil < :timenow";
+                     AND        hideuntil < :timenow
+                     AND	    sa.slotid IS NULL";
 
         return       $DB->get_records_sql($sql,array('starttime'=>$starttime,'timenow'=>time()));
     }
 
 
+    /**
+     * clears the waiting lists of schedulers that have slots that were unhidden since the given start time and now
+     *
+     *
+     * @param $starttime
+     */
     public static  function     clear_waitinglists($starttime)      {
 
         global  $DB;
