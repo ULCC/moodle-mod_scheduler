@@ -372,5 +372,21 @@ function xmldb_scheduler_upgrade($oldversion=0) {
 
     }
 
+
+    if ($oldversion < 2018101801)       {
+
+        // Add waitinglist fields to the scheduler table
+        $table = new xmldb_table('scheduler');
+
+        $field = new xmldb_field('clearwaitinglistonunhidden', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, '0', 'usewaitinglist');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Scheduler savepoint reached.
+        upgrade_mod_savepoint(true, 2018101801, 'scheduler');
+
+    }
+
     return true;
 }
