@@ -1150,7 +1150,11 @@ class mod_scheduler_renderer extends plugin_renderer_base {
                 $linkhtml   =   ($w->status < 2)  ?  html_writer::link($w->actionurl,get_string('schedule','scheduler')) :  '' ;
 
                 $cell4 = new html_table_cell($linkhtml);
-                $row->cells = array($cell1, $cell2,$cell3,$cell4);
+
+                $removehtml   =   ($w->status < 2)  ?  html_writer::link($w->removalurl,get_string('removewaitinglistentry','scheduler')) :  '' ;
+
+                $cell5 = new html_table_cell($removehtml);
+                $row->cells = array($cell1, $cell2,$cell3,$cell4,$cell5);
                 $t->data[] = $row;
             }
 

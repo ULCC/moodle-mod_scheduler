@@ -6,6 +6,15 @@ require_once($CFG->dirroot.'/mod/scheduler/locallib.php');
 $taburl = new moodle_url('/mod/scheduler/view.php', array('id' => $scheduler->cmid,
     'what' => 'viewwaitinglist'));
 
+if ($action ==  'removeentry')   {
+
+    $entryid                =   required_param('entryid',PARAM_INT);
+
+    $waitinglistentry      =         scheduler_waiting_list::load_by_id($entryid,$scheduler);
+
+    $waitinglistentry->admin_entry_removal();
+
+}
 $PAGE->set_url($taburl);
 
 echo $OUTPUT->header();

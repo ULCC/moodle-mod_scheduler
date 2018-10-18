@@ -775,7 +775,7 @@ class scheduler_waiting_list_table implements renderable
                 $renderdata->statustext      =   $swl->get_status_text();
                 $renderdata->group              =   $swl->get_group_name();
                 $renderdata->actionurl       =   ($renderdata->status < scheduler_waiting_list::ACCEPTED) ? new moodle_url('/mod/scheduler/view.php', array('id'=>$coursemoduleid,'what' => 'schedule', 'studentid' => $student->id, 'sesskey' => sesskey())): '';
-
+                $renderdata->removalurl      =   ($renderdata->status < scheduler_waiting_list::ACCEPTED) ? new moodle_url('/mod/scheduler/view.php', array('id'=>$coursemoduleid,'what' => 'removeentry', 'studentid' => $student->id, 'sesskey' => sesskey(), 'entryid' => $renderdata->waitinglistid)): '';
                 $this->waitinglist[]         =   $renderdata;
 
             }

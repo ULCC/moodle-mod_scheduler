@@ -130,7 +130,7 @@ class scheduler_waiting_list      extends mvc_child_record_model {
      * by system
      */
 
-    public function     system_entry_removeal()     {
+    public function     system_entry_removal()     {
         $this->data->timemodified     =   time();
         $this->data->status     =   self::REMOVED_BY_SYSTEM;
         parent::save();
@@ -141,7 +141,7 @@ class scheduler_waiting_list      extends mvc_child_record_model {
      * by teacher
      */
 
-    public function     admin_entry_removeal()     {
+    public function     admin_entry_removal()     {
         $this->data->timemodified     =   time();
         $this->data->status     =   self::REMOVED_BY_ADMIN;
         parent::save();
