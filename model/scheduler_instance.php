@@ -151,6 +151,15 @@ class scheduler_instance extends mvc_record_model {
     }
 
     /**
+     * Retrieve the id of the creator of this scheduler
+     *
+     * @return stdClass
+     */
+    public function get_creatorid() {
+        return $this->data->creatorid;
+    }
+
+    /**
      * Retrieve the course record of this scheduler
      *
      * @return stdClass
@@ -1476,6 +1485,10 @@ class scheduler_instance extends mvc_record_model {
         return  $DB->record_exists('scheduler_waiting_list',array('id'=>$waitinglistid,'studentid'=>$studentid,'status'=>scheduler_waiting_list::PENDING));
     }
 
+
+    public function send_admin_notification()   {
+        return  true;
+    }
 
     /**
      * Create a new waiting list entry relating to this scheduler.

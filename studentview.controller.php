@@ -345,6 +345,13 @@ if ($action == 'joinwaitinglist')   {
 
         $msg    =   get_string('addedtowaitinglist','scheduler');
 
+        if ($scheduler->send_admin_notification())  {
+
+            $listspace->waiting_list_entry_created_notification();
+
+        }
+
+
     }   else    {
         //msg you are already on the waiting list
         $msg    =   get_string('alreadyonwaitinglist','scheduler');

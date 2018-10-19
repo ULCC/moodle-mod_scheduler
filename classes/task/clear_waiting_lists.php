@@ -35,6 +35,4 @@ class clear_waiting_lists extends \core\task\scheduled_task {
         \scheduler_instance::clear_waitinglists($this->get_last_run_time());
     }
 
-
-
 }

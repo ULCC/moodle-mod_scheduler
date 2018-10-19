@@ -312,6 +312,52 @@ class scheduler_waiting_list      extends mvc_child_record_model {
 
     }
 
+
+    /**
+     * Creates the message to be sent to inform a waiting list user that a slot has become available
+     *
+     * @param $coursemoduleid
+     * @param $waitinglistid
+     * @param $adminid
+     * @param $courseid
+     * @return stdClass a object populared with the message information
+     */
+    public function waiting_list_entry_created_message($coursemoduleid,$adminid  ,$courseid,$schedulername)         {
+
+        $acceptparams        =   array('id'=>$coursemoduleid);
+
+
+        $tempurl             =   new moodle_url('/mod/scheduler/view.php',$acceptparams);
+
+        $msgstrings       =   new stdClass();
+        $msgstrings->addslot   =   $tempurl->__toString();
+
+        $msgstrings->schedulername  =    $schedulername;
+
+        $message                =   new     stdClass();
+        $message->adminid      =  $adminid;
+        $message->courseid       =  $courseid;
+        $message->subject       =   get_string('newwaitinglistentry','scheduler',$msgstrings->schedulername);
+        $message->fullmsg       =   get_string('newwaitinglistentrybody','scheduler',$msgstrings);
+        $message->fullmsghtml   =   get_string('newwaitinglistentrybodyhtml','scheduler',$msgstrings);
+
+        return  $message;
+
+    }
+
+
+    public  function    waiting_list_entry_created_notification()        {
+
+        if (isset($this->data->id))    {
+            if ($this->get_parent()->get_creatorid() != 0 ) {
+                scheduler_waiting_list::admin_waiting_list_message($this->waiting_list_entry_created_message($this->get_parent()->get_cmid(), $this->get_parent()->get_creatorid(), $this->get_parent()->get_courseid(), $this->get_parent()->get_name()));
+            }
+
+        }
+
+    }
+
+
     /**
      * Called when a booking has been removed, this function informs the next student on the waiting list that
      * that they may make a booking
@@ -482,6 +528,38 @@ class scheduler_waiting_list      extends mvc_child_record_model {
         $messageid = message_send($message);
 
     }
+
+
+    /**
+     * Sends a message to the given student from a given user
+     *
+     * @param $msgdetails
+     */
+    public static   function admin_waiting_list_message($msgdetails)     {
+
+        global      $DB,$USER;
+
+        $admin    =   $DB->get_record('user',array('id'=>$msgdetails->adminid));
+        //$sender     =   $admin;
+
+        $message = new \core\message\message();
+        $message->component         = 'mod_scheduler';
+        $message->name              = 'waitinglistnotification';
+        $message->userfrom          = $admin;
+        $message->userto            = $admin;
+        $message->subject           = $msgdetails->subject;
+        $message->fullmessage       = $msgdetails->fullmsg;
+        $message->fullmessageformat = FORMAT_MARKDOWN;
+        $message->fullmessagehtml   = $msgdetails->fullmsghtml;
+        $message->smallmessage      = $msgdetails->fullmsg;
+        $message->notification      = '0';
+
+        $message->courseid = $msgdetails->courseid;
+
+        $messageid = message_send($message);
+
+    }
+
 
 
     /**

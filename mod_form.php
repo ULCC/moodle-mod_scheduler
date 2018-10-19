@@ -27,11 +27,13 @@ class mod_scheduler_mod_form extends moodleform_mod {
 
     function definition() {
 
-        global $CFG, $COURSE, $OUTPUT;
+        global $CFG, $COURSE, $OUTPUT, $USER;
         $mform    =& $this->_form;
 
         // General introduction.
         $mform->addElement('header', 'general', get_string('general', 'form'));
+
+        $mform->addElement('hidden', 'creatorid', $USER->id);
 
         $mform->addElement('text', 'name', get_string('name'), array('size' => '64'));
         if (!empty($CFG->formatstringstriptags)) {
