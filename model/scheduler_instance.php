@@ -1487,7 +1487,7 @@ class scheduler_instance extends mvc_record_model {
 
 
     public function send_admin_notification()   {
-        return  true;
+        return  (bool) $this->data->waitinglistentrynotification;
     }
 
     /**
