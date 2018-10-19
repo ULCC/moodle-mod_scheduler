@@ -373,7 +373,7 @@ function xmldb_scheduler_upgrade($oldversion=0) {
     }
 
 
-    if ($oldversion < 2018101801)       {
+    if ($oldversion < 2018101902)       {
 
         // Add waitinglist fields to the scheduler table
         $table = new xmldb_table('scheduler');
@@ -383,13 +383,17 @@ function xmldb_scheduler_upgrade($oldversion=0) {
             $dbman->add_field($table, $field);
         }
 
-        $field = new xmldb_field('creatorid', XMLDB_TYPE_INTEGER, 10, null, XMLDB_NOTNULL, null, '0', 'usecaptcha');
+        $field = new xmldb_field('creatorid', XMLDB_TYPE_INTEGER, 10, null, XMLDB_NOTNULL, null, '0', 'waitinglistsize');
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }
 
+        $field = new xmldb_field('waitinglistentrynotification', XMLDB_TYPE_INTEGER, 2, null, XMLDB_NOTNULL, null, '0', 'waitinglistunlock');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
         // Scheduler savepoint reached.
-        upgrade_mod_savepoint(true, 2018101801, 'scheduler');
+        upgrade_mod_savepoint(true, 2018101902, 'scheduler');
 
     }
 
