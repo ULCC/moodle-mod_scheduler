@@ -140,6 +140,15 @@ class mod_scheduler_mod_form extends moodleform_mod {
 
         $mform->disabledIf('clearwaitinglistonunhidden', 'usewaitinglist', 'eq', '0');
 
+        //waiting list code
+        $options['0'] = get_string('no');
+        $options['1'] = get_string('yes');
+        $mform->addElement('select', 'waitinglistentrynotification', get_string('waitinglistentrynotification', 'scheduler'), $options);
+        $mform->setDefault('waitinglistentrynotification', '0');
+        $mform->addHelpButton('waitinglistentrynotification', 'waitinglistentrynotification', 'scheduler');
+
+        $mform->disabledIf('waitinglistentrynotification', 'usewaitinglist', 'eq', '0');
+
 
 
 
