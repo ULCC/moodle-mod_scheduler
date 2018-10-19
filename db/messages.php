@@ -28,4 +28,8 @@ $messageproviders = array (
     'bookingspace' => array(
     ),
 
+    // Notification that a user has joined the waiting list.
+    'waitinglistnotification' => array(
+    ),
+
 );
