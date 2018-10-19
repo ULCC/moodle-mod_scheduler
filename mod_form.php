@@ -34,6 +34,8 @@ class mod_scheduler_mod_form extends moodleform_mod {
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
         $mform->addElement('hidden', 'creatorid', $USER->id);
+        $mform->setType('creatorid', PARAM_INT);
+
 
         $mform->addElement('text', 'name', get_string('name'), array('size' => '64'));
         if (!empty($CFG->formatstringstriptags)) {
